@@ -1,4 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
+import 'package:table_calendar/table_calendar.dart';
 import '../models/attendance.dart';
 
 class AttendanceState {
@@ -27,10 +29,7 @@ class AttendanceState {
 
 class AttendanceNotifier extends StateNotifier<AttendanceState> {
   AttendanceNotifier()
-      : super(AttendanceState(
-          attendanceList: [],
-          selectedDate: DateTime.now(),
-        )) {
+    : super(AttendanceState(attendanceList: [], selectedDate: DateTime.now())) {
     _loadMockData();
   }
 
@@ -38,17 +37,82 @@ class AttendanceNotifier extends StateNotifier<AttendanceState> {
     state = state.copyWith(selectedDate: date);
   }
 
+  AttendanceModel? get todayAttendance {
+    final now = DateTime.now();
+    try {
+      return state.attendanceList.firstWhere((a) => isSameDay(a.date, now));
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<void> checkIn() async {
+    final now = DateTime.now();
+    final time = DateFormat('hh:mm a').format(now);
+    _updateTodayRecord(checkIn: time, isPresent: true);
+  }
+
+  Future<void> checkOut() async {
+    final now = DateTime.now();
+    final time = DateFormat('hh:mm a').format(now);
+    _updateTodayRecord(checkOut: time);
+  }
+
+  Future<void> breakIn() async {
+    final now = DateTime.now();
+    final time = DateFormat('hh:mm a').format(now);
+    _updateTodayRecord(breakIn: time);
+  }
+
+  Future<void> breakOut() async {
+    final now = DateTime.now();
+    final time = DateFormat('hh:mm a').format(now);
+    _updateTodayRecord(breakOut: time);
+  }
+
+  void _updateTodayRecord({
+    String? checkIn,
+    String? checkOut,
+    String? breakIn,
+    String? breakOut,
+    bool? isPresent,
+  }) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+
+    List<AttendanceModel> newList = List.from(state.attendanceList);
+    int index = newList.indexWhere((a) => isSameDay(a.date, today));
+
+    if (index != -1) {
+      final existing = newList[index];
+      newList[index] = AttendanceModel(
+        date: existing.date,
+        isPresent: isPresent ?? existing.isPresent,
+        checkIn: checkIn ?? existing.checkIn,
+        checkOut: checkOut ?? existing.checkOut,
+        breakIn: breakIn ?? existing.breakIn,
+        breakOut: breakOut ?? existing.breakOut,
+      );
+    } else {
+      newList.add(
+        AttendanceModel(
+          date: today,
+          isPresent: isPresent ?? false,
+          checkIn: checkIn,
+          checkOut: checkOut,
+          breakIn: breakIn,
+          breakOut: breakOut,
+        ),
+      );
+    }
+
+    state = state.copyWith(attendanceList: newList);
+  }
+
   void _loadMockData() {
     final now = DateTime.now();
     final mockData = [
-      AttendanceModel(
-        date: DateTime(now.year, now.month, now.day),
-        isPresent: true,
-        checkIn: "09:15 AM",
-        checkOut: "06:30 PM",
-        breakIn: "01:00 PM",
-        breakOut: "01:45 PM",
-      ),
+      // Today will be empty or updated by actions
       AttendanceModel(
         date: DateTime(now.year, now.month, now.day - 1),
         isPresent: true,

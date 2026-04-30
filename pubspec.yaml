@@ -53,6 +53,9 @@ dependencies:
   # Collections for doing binary search on List
   collection: ^1.19.1
 
+  # Chart
+  fl_chart: ^1.2.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
