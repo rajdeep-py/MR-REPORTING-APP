@@ -46,7 +46,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final authState = ref.read(authProvider);
     if (authState.user != null) {
       if (mounted) {
-        context.go(AppRouter.home);
+        context.go(AppRouter.profile);
       }
     } else if (authState.error != null) {
       if (mounted) {

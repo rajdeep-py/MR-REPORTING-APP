@@ -32,6 +32,15 @@ class AuthNotifier extends StateNotifier<AuthState> {
         name: "John Doe",
         phone: phone,
         role: "Medical Representative",
+        designation: "Senior MR",
+        company: "MR Pharma Ltd.",
+        email: "john.doe@mrpharma.com",
+        hq: "Mumbai Central",
+        areaOfWork: "South Mumbai",
+        altPhone: "9820012345",
+        altEmail: "john.personal@gmail.com",
+        address: "123, Ocean View Apts, Marine Drive, Mumbai - 400020",
+        password: password,
       );
       state = state.copyWith(user: user, isLoading: false);
     } else {
