@@ -46,6 +46,13 @@ dependencies:
   # Animation
   animate_do: ^3.3.4
 
+  # Date and Time
+  table_calendar: ^3.2.0
+  intl: ^0.20.2
+
+  # Collections for doing binary search on List
+  collection: ^1.19.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

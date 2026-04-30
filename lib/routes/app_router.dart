@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import '../screens/auth/splash_screen.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/profile/profile_screen.dart';
+import '../screens/attendance/attendance_record_screen.dart';
 
 class AppRouter {
   static const String splash = '/';
@@ -43,7 +44,7 @@ class AppRouter {
       ),
       GoRoute(
         path: attendance,
-        builder: (context, state) => _placeholder('Attendance Record'),
+        builder: (context, state) => const AttendanceRecordScreen(),
       ),
       GoRoute(
         path: target,
