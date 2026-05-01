@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../models/doctor.dart';
 import '../screens/auth/splash_screen.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/profile/profile_screen.dart';
@@ -10,6 +11,9 @@ import '../screens/about_us/about_us_screen.dart';
 import '../screens/routine/routine_screen.dart';
 import '../screens/team/my_team_screen.dart';
 import '../screens/team/team_details_screen.dart';
+import '../screens/doctor/my_doctor_screen.dart';
+import '../screens/doctor/doctor_detail_screen.dart';
+import '../screens/doctor/add_edit_doctor_screen.dart';
 
 class AppRouter {
   static const String splash = '/';
@@ -22,6 +26,8 @@ class AppRouter {
   static const String teamDetails = '/team-details/:teamId';
   static const String routine = '/routine';
   static const String doctors = '/doctors';
+  static const String doctorDetail = '/doctor-detail/:doctorId';
+  static const String addEditDoctor = '/add-edit-doctor';
   static const String dcr = '/dcr';
   static const String trips = '/trips';
   static const String chemist = '/chemist';
@@ -75,6 +81,24 @@ class AppRouter {
       GoRoute(
         path: routine,
         builder: (context, state) => const RoutineScreen(),
+      ),
+      GoRoute(
+        path: doctors,
+        builder: (context, state) => const MyDoctorScreen(),
+      ),
+      GoRoute(
+        path: doctorDetail,
+        builder: (context, state) {
+          final doctorId = state.pathParameters['doctorId']!;
+          return DoctorDetailScreen(doctorId: doctorId);
+        },
+      ),
+      GoRoute(
+        path: addEditDoctor,
+        builder: (context, state) {
+          final doctor = state.extra as DoctorModel?;
+          return AddEditDoctorScreen(doctorToEdit: doctor);
+        },
       ),
       GoRoute(
         path: doctors,
