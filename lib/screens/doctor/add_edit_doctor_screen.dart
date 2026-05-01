@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:animate_do/animate_do.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/app_bar.dart';
 import '../../models/doctor.dart';
@@ -30,6 +31,7 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
   late TextEditingController _emailCtrl;
   late TextEditingController _addressCtrl;
   String? _imagePath;
+  List<DoctorChamber> _chambers = [];
 
   @override
   void initState() {
@@ -45,6 +47,7 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
     _emailCtrl = TextEditingController(text: d?.email);
     _addressCtrl = TextEditingController(text: d?.address);
     _imagePath = d?.photoUrl;
+    _chambers = d?.chambers != null ? List.from(d!.chambers) : [];
   }
 
   @override
@@ -126,6 +129,122 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
     );
   }
 
+  void _showChamberDialog({DoctorChamber? chamber, int? index}) {
+    final nameCtrl = TextEditingController(text: chamber?.name);
+    final addressCtrl = TextEditingController(text: chamber?.address);
+    final phoneCtrl = TextEditingController(text: chamber?.phone);
+
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: '',
+      transitionDuration: const Duration(milliseconds: 300),
+      pageBuilder: (context, anim1, anim2) => Center(
+        child: FadeInUp(
+          duration: const Duration(milliseconds: 300),
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 24),
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: BorderRadius.circular(32),
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: AppColors.black.withAlpha(10),
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: const Icon(Iconsax.hospital, color: AppColors.black),
+                      ),
+                      const SizedBox(width: 16),
+                      Text(
+                        chamber == null ? 'Add Chamber' : 'Edit Chamber',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                  _buildDialogField('Chamber Name', Iconsax.building, nameCtrl),
+                  const SizedBox(height: 16),
+                  _buildDialogField('Full Address', Iconsax.location, addressCtrl),
+                  const SizedBox(height: 16),
+                  _buildDialogField('Contact Phone', Iconsax.call, phoneCtrl),
+                  const SizedBox(height: 32),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                          ),
+                          child: const Text('CANCEL', style: TextStyle(color: AppColors.coolGrey, fontWeight: FontWeight.w800)),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (nameCtrl.text.isNotEmpty) {
+                              final newChamber = DoctorChamber(
+                                name: nameCtrl.text,
+                                address: addressCtrl.text,
+                                phone: phoneCtrl.text,
+                              );
+                              setState(() {
+                                if (index == null) {
+                                  _chambers.add(newChamber);
+                                } else {
+                                  _chambers[index] = newChamber;
+                                }
+                              });
+                              Navigator.pop(context);
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.black,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                          ),
+                          child: const Text('SAVE', style: TextStyle(color: AppColors.white, fontWeight: FontWeight.w800)),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDialogField(String label, IconData icon, TextEditingController ctrl) {
+    return TextField(
+      controller: ctrl,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(icon, color: AppColors.black, size: 18),
+        filled: true,
+        fillColor: AppColors.surface,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide.none,
+        ),
+      ),
+    );
+  }
+
   void _save() {
     if (_formKey.currentState!.validate()) {
       final newDoctor = DoctorModel(
@@ -140,7 +259,7 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
         email: _emailCtrl.text,
         address: _addressCtrl.text,
         photoUrl: _imagePath,
-        chambers: widget.doctorToEdit?.chambers ?? [],
+        chambers: _chambers,
       );
 
       if (widget.doctorToEdit == null) {
@@ -169,6 +288,7 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
         child: Form(
           key: _formKey,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Image Picker Section
               Center(
@@ -213,6 +333,12 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
                 ),
               ),
               const SizedBox(height: 32),
+              
+              Text(
+                'BASIC INFORMATION',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w800, letterSpacing: 1.5),
+              ),
+              const SizedBox(height: 16),
               _buildField('Full Name', Iconsax.user, _nameCtrl),
               AppGaps.mediumV,
               _buildField('Specialization', Iconsax.award, _specializationCtrl),
@@ -222,14 +348,98 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
               _buildField('Qualification', Iconsax.teacher, _qualificationCtrl),
               AppGaps.mediumV,
               _buildField('Birthday (e.g. 12th Aug)', Iconsax.cake, _birthdayCtrl),
-              AppGaps.mediumV,
+              AppGaps.largeV,
+              
+              Text(
+                'CONTACT DETAILS',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w800, letterSpacing: 1.5),
+              ),
+              const SizedBox(height: 16),
               _buildField('Personal Phone', Iconsax.call, _phoneCtrl),
               AppGaps.mediumV,
               _buildField('Email Address', Iconsax.sms, _emailCtrl),
               AppGaps.mediumV,
               _buildField('Residential Address', Iconsax.location, _addressCtrl),
-              AppGaps.mediumV,
+              AppGaps.largeV,
+              
+              Text(
+                'PROFESSIONAL OVERVIEW',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w800, letterSpacing: 1.5),
+              ),
+              const SizedBox(height: 16),
               _buildField('Description/Overview', Iconsax.document_text, _descriptionCtrl, maxLines: 3),
+              AppGaps.largeV,
+
+              // Chambers Section
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'CHAMBERS',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w800, letterSpacing: 1.5),
+                  ),
+                  TextButton.icon(
+                    onPressed: () => _showChamberDialog(),
+                    icon: const Icon(Iconsax.add_circle, size: 18),
+                    label: const Text('Add Chamber'),
+                    style: TextButton.styleFrom(foregroundColor: AppColors.black),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              if (_chambers.isEmpty)
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: AppColors.surface,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: AppColors.coolGrey.withAlpha(30)),
+                  ),
+                  child: const Text('No chambers added yet.', textAlign: TextAlign.center, style: TextStyle(color: AppColors.coolGrey, fontSize: 12)),
+                )
+              else
+                ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: _chambers.length,
+                  separatorBuilder: (context, index) => const SizedBox(height: 8),
+                  itemBuilder: (context, index) {
+                    final chamber = _chambers[index];
+                    return Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: AppColors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: AppColors.coolGrey.withAlpha(30)),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Iconsax.hospital, color: AppColors.black, size: 20),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(chamber.name, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14)),
+                                Text(chamber.address, style: const TextStyle(color: AppColors.coolGrey, fontSize: 11)),
+                              ],
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () => _showChamberDialog(chamber: chamber, index: index),
+                            icon: const Icon(Iconsax.edit_2, size: 18, color: AppColors.coolGrey),
+                          ),
+                          IconButton(
+                            onPressed: () => setState(() => _chambers.removeAt(index)),
+                            icon: const Icon(Iconsax.trash, size: 18, color: Colors.redAccent),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+
               AppGaps.extraLargeV,
               SizedBox(
                 width: double.infinity,
