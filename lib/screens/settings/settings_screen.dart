@@ -6,10 +6,30 @@ import '../../theme/app_theme.dart';
 import '../../widgets/app_bar.dart';
 import '../../widgets/side_nav_bar.dart';
 import '../../cards/settings/settings_card.dart';
+import '../../cards/settings/help_center_bottomsheet.dart';
+import '../../cards/settings/give_feedback_bottomsheet.dart';
 import '../../routes/app_router.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
+
+  void _showHelpCenter(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => const HelpCenterBottomSheet(),
+    );
+  }
+
+  void _showGiveFeedback(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => const GiveFeedbackBottomSheet(),
+    );
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -31,12 +51,12 @@ class SettingsScreen extends ConsumerWidget {
             SettingsCard(
               title: 'Help Center',
               icon: Iconsax.message_question,
-              onTap: () {},
+              onTap: () => _showHelpCenter(context),
             ),
             SettingsCard(
               title: 'Give Feedback',
               icon: Iconsax.like_1,
-              onTap: () {},
+              onTap: () => _showGiveFeedback(context),
             ),
             
             const SizedBox(height: 24),
