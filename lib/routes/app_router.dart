@@ -29,6 +29,8 @@ import '../screens/dcr/dcr_screen.dart';
 import '../screens/dcr/create_edit_dcr_screen.dart';
 import '../screens/chemist_shop_reporting/chemist_shop_reporting_screen.dart';
 import '../screens/chemist_shop_reporting/create_edit_chemist_shop_reporting_screen.dart';
+import '../screens/expense/my_expense_screen.dart';
+import '../screens/expense/create_expense_screen.dart';
 
 class AppRouter {
   static const String splash = '/';
@@ -57,6 +59,7 @@ class AppRouter {
   static const String orders = '/orders';
   static const String gifts = '/gifts';
   static const String expenses = '/expenses';
+  static const String createExpense = '/create-expense';
   static const String profile = '/profile';
   static const String notifications = '/notifications';
   static const String about = '/about';
@@ -179,7 +182,11 @@ class AppRouter {
       ),
       GoRoute(
         path: expenses,
-        builder: (context, state) => _placeholder('Expense Tracker'),
+        builder: (context, state) => const MyExpenseScreen(),
+      ),
+      GoRoute(
+        path: createExpense,
+        builder: (context, state) => const CreateExpenseScreen(),
       ),
       GoRoute(
         path: profile,
