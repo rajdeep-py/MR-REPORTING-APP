@@ -31,6 +31,9 @@ import '../screens/chemist_shop_reporting/chemist_shop_reporting_screen.dart';
 import '../screens/chemist_shop_reporting/create_edit_chemist_shop_reporting_screen.dart';
 import '../screens/expense/my_expense_screen.dart';
 import '../screens/expense/create_expense_screen.dart';
+import '../screens/settings/settings_screen.dart';
+import '../screens/settings/privacy_policy_screen.dart';
+import '../screens/settings/terms_conditions_screen.dart';
 
 class AppRouter {
   static const String splash = '/';
@@ -64,6 +67,8 @@ class AppRouter {
   static const String notifications = '/notifications';
   static const String about = '/about';
   static const String settings = '/settings';
+  static const String privacyPolicy = '/privacy-policy';
+  static const String termsConditions = '/terms-conditions';
 
   static final GoRouter router = GoRouter(
     initialLocation: splash,
@@ -199,7 +204,15 @@ class AppRouter {
       GoRoute(path: about, builder: (context, state) => const AboutUsScreen()),
       GoRoute(
         path: settings,
-        builder: (context, state) => _placeholder('Settings'),
+        builder: (context, state) => const SettingsScreen(),
+      ),
+      GoRoute(
+        path: privacyPolicy,
+        builder: (context, state) => const PrivacyPolicyScreen(),
+      ),
+      GoRoute(
+        path: termsConditions,
+        builder: (context, state) => const TermsConditionsScreen(),
       ),
     ],
   );

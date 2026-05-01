@@ -72,12 +72,6 @@ class SideNavBar extends StatelessWidget {
                     ),
                     _buildMenuItem(
                       context,
-                      'Stockist Reporting',
-                      Iconsax.document_text,
-                      AppRouter.dcr,
-                    ),
-                    _buildMenuItem(
-                      context,
                       'Expense Tracker',
                       Iconsax.money,
                       AppRouter.expenses,
@@ -142,23 +136,18 @@ class SideNavBar extends StatelessWidget {
                       Iconsax.profile_circle,
                       AppRouter.profile,
                     ),
-                    _buildMenuItem(
-                      context,
-                      'Settings',
-                      Iconsax.setting_2,
-                      AppRouter.settings,
-                    ),
-                    _buildMenuItem(
-                      context,
-                      'About Us',
-                      Iconsax.info_circle,
-                      AppRouter.about,
-                    ),
+
                     _buildMenuItem(
                       context,
                       'Notifications',
                       Iconsax.notification,
                       AppRouter.notifications,
+                    ),
+                    _buildMenuItem(
+                      context,
+                      'Settings',
+                      Iconsax.setting_2,
+                      AppRouter.settings,
                     ),
 
                     AppGaps.largeV,

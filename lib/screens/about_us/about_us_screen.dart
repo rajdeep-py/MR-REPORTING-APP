@@ -27,8 +27,8 @@ class AboutUsScreen extends ConsumerWidget {
       appBar: const CustomAppBar(
         title: 'About Us',
         subtitle: 'Our Vision & Values',
-        showDrawerButton: true,
-        showBackButton: false,
+        showDrawerButton: false,
+        showBackButton: true,
       ),
       body: SingleChildScrollView(
         child: Column(
