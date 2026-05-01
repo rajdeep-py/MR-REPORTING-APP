@@ -7,6 +7,7 @@ import '../screens/attendance/attendance_record_screen.dart';
 import '../screens/home/home_screen.dart';
 import '../screens/notification/notification_screen.dart';
 import '../screens/about_us/about_us_screen.dart';
+import '../screens/routine/routine_screen.dart';
 
 class AppRouter {
   static const String splash = '/';
@@ -63,7 +64,7 @@ class AppRouter {
       ),
       GoRoute(
         path: routine,
-        builder: (context, state) => _placeholder('My Routine'),
+        builder: (context, state) => const RoutineScreen(),
       ),
       GoRoute(
         path: doctors,
