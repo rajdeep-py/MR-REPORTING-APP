@@ -8,6 +8,7 @@ import '../../widgets/side_nav_bar.dart';
 import '../../cards/settings/settings_card.dart';
 import '../../cards/settings/help_center_bottomsheet.dart';
 import '../../cards/settings/give_feedback_bottomsheet.dart';
+import '../../cards/settings/delete_account_bottomsheet.dart';
 import '../../routes/app_router.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -28,6 +29,15 @@ class SettingsScreen extends ConsumerWidget {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => const GiveFeedbackBottomSheet(),
+    );
+  }
+
+  void _showDeleteAccount(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => const DeleteAccountBottomSheet(),
     );
   }
 
@@ -84,7 +94,7 @@ class SettingsScreen extends ConsumerWidget {
               icon: Iconsax.user_remove,
               iconColor: Colors.red,
               textColor: Colors.red,
-              onTap: () => _showDeleteConfirmation(context),
+              onTap: () => _showDeleteAccount(context),
             ),
             const SizedBox(height: 40),
             Center(
@@ -111,34 +121,6 @@ class SettingsScreen extends ConsumerWidget {
           color: AppColors.coolGrey,
           letterSpacing: 1.5,
         ),
-      ),
-    );
-  }
-
-  void _showDeleteConfirmation(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        title: const Text('Delete Account', style: TextStyle(fontWeight: FontWeight.w800)),
-        content: const Text('Are you sure you want to delete your account? This action cannot be undone.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('CANCEL', style: TextStyle(color: AppColors.coolGrey, fontWeight: FontWeight.w700)),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              // Handle account deletion
-              Navigator.pop(context);
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            ),
-            child: const Text('DELETE', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800)),
-          ),
-        ],
       ),
     );
   }
