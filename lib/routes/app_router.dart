@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../models/doctor.dart';
+import '../models/chemist_shop.dart';
 import '../screens/auth/splash_screen.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/profile/profile_screen.dart';
@@ -14,6 +15,9 @@ import '../screens/team/team_details_screen.dart';
 import '../screens/doctor/my_doctor_screen.dart';
 import '../screens/doctor/doctor_detail_screen.dart';
 import '../screens/doctor/add_edit_doctor_screen.dart';
+import '../screens/chemist_shop/my_chemist_shop_screen.dart';
+import '../screens/chemist_shop/chemist_shop_detail_screen.dart';
+import '../screens/chemist_shop/add_edit_chemist_shop_screen.dart';
 
 class AppRouter {
   static const String splash = '/';
@@ -31,6 +35,8 @@ class AppRouter {
   static const String dcr = '/dcr';
   static const String trips = '/trips';
   static const String chemist = '/chemist';
+  static const String chemistDetail = '/chemist-detail/:shopId';
+  static const String addEditChemist = '/add-edit-chemist';
   static const String stockist = '/stockist';
   static const String orders = '/orders';
   static const String gifts = '/gifts';
@@ -101,8 +107,22 @@ class AppRouter {
         },
       ),
       GoRoute(
-        path: doctors,
-        builder: (context, state) => _placeholder('My Doctors'),
+        path: chemist,
+        builder: (context, state) => const MyChemistShopScreen(),
+      ),
+      GoRoute(
+        path: chemistDetail,
+        builder: (context, state) {
+          final shopId = state.pathParameters['shopId']!;
+          return ChemistShopDetailScreen(shopId: shopId);
+        },
+      ),
+      GoRoute(
+        path: addEditChemist,
+        builder: (context, state) {
+          final shop = state.extra as ChemistShopModel?;
+          return AddEditChemistShopScreen(shopToEdit: shop);
+        },
       ),
       GoRoute(
         path: dcr,
@@ -111,10 +131,6 @@ class AppRouter {
       GoRoute(
         path: trips,
         builder: (context, state) => _placeholder('My Trips'),
-      ),
-      GoRoute(
-        path: chemist,
-        builder: (context, state) => _placeholder('My Chemist Shops'),
       ),
       GoRoute(
         path: stockist,
