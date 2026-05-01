@@ -1,43 +1,44 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../models/doctor.dart';
+
 import '../models/chemist_shop.dart';
-import '../models/stockist.dart';
-import '../models/dcr.dart';
 import '../models/chemist_shop_reporting.dart';
-import '../screens/auth/splash_screen.dart';
-import '../screens/auth/login_screen.dart';
-import '../screens/profile/profile_screen.dart';
-import '../screens/attendance/attendance_record_screen.dart';
-import '../screens/home/home_screen.dart';
-import '../screens/notification/notification_screen.dart';
+import '../models/dcr.dart';
+import '../models/doctor.dart';
+import '../models/stockist.dart';
 import '../screens/about_us/about_us_screen.dart';
-import '../screens/routine/routine_screen.dart';
-import '../screens/team/my_team_screen.dart';
-import '../screens/team/team_details_screen.dart';
-import '../screens/doctor/my_doctor_screen.dart';
-import '../screens/doctor/doctor_detail_screen.dart';
-import '../screens/doctor/add_edit_doctor_screen.dart';
-import '../screens/chemist_shop/my_chemist_shop_screen.dart';
-import '../screens/chemist_shop/chemist_shop_detail_screen.dart';
+import '../screens/attendance/attendance_record_screen.dart';
+import '../screens/auth/login_screen.dart';
+import '../screens/auth/splash_screen.dart';
 import '../screens/chemist_shop/add_edit_chemist_shop_screen.dart';
-import '../screens/stockist/my_stockist_screen.dart';
-import '../screens/stockist/stockist_detail_screen.dart';
-import '../screens/stockist/add_edit_stockist_screen.dart';
-import '../screens/visual_ads/visual_ads_screen.dart';
-import '../screens/dcr/dcr_screen.dart';
-import '../screens/dcr/create_edit_dcr_screen.dart';
+import '../screens/chemist_shop/chemist_shop_detail_screen.dart';
+import '../screens/chemist_shop/my_chemist_shop_screen.dart';
 import '../screens/chemist_shop_reporting/chemist_shop_reporting_screen.dart';
 import '../screens/chemist_shop_reporting/create_edit_chemist_shop_reporting_screen.dart';
-import '../screens/expense/my_expense_screen.dart';
+import '../screens/dcr/create_edit_dcr_screen.dart';
+import '../screens/dcr/dcr_screen.dart';
+import '../screens/doctor/add_edit_doctor_screen.dart';
+import '../screens/doctor/doctor_detail_screen.dart';
+import '../screens/doctor/my_doctor_screen.dart';
 import '../screens/expense/create_expense_screen.dart';
-import '../screens/settings/settings_screen.dart';
-import '../screens/settings/privacy_policy_screen.dart';
-import '../screens/settings/terms_conditions_screen.dart';
+import '../screens/expense/my_expense_screen.dart';
 import '../screens/gift/gift_screen.dart';
 import '../screens/gift/request_gift_screen.dart';
-import '../screens/order/my_order_screen.dart';
+import '../screens/home/home_screen.dart';
+import '../screens/monthly_target/monthly_target_screen.dart';
+import '../screens/notification/notification_screen.dart';
 import '../screens/order/create_order_screen.dart';
+import '../screens/order/my_order_screen.dart';
+import '../screens/profile/profile_screen.dart';
+import '../screens/routine/routine_screen.dart';
+import '../screens/settings/privacy_policy_screen.dart';
+import '../screens/settings/settings_screen.dart';
+import '../screens/settings/terms_conditions_screen.dart';
+import '../screens/stockist/add_edit_stockist_screen.dart';
+import '../screens/stockist/my_stockist_screen.dart';
+import '../screens/stockist/stockist_detail_screen.dart';
+import '../screens/team/my_team_screen.dart';
+import '../screens/team/team_details_screen.dart';
+import '../screens/visual_ads/visual_ads_screen.dart';
 
 class AppRouter {
   static const String splash = '/';
@@ -62,7 +63,8 @@ class AppRouter {
   static const String stockistDetail = '/stockist-detail/:stockistId';
   static const String addEditStockist = '/add-edit-stockist';
   static const String chemistReporting = '/chemist-reporting';
-  static const String createEditChemistReporting = '/create-edit-chemist-reporting';
+  static const String createEditChemistReporting =
+      '/create-edit-chemist-reporting';
   static const String orders = '/orders';
   static const String createOrder = '/create-order';
   static const String gifts = '/gifts';
@@ -88,7 +90,7 @@ class AppRouter {
       ),
       GoRoute(
         path: target,
-        builder: (context, state) => _placeholder('Monthly Target'),
+        builder: (context, state) => const MonthlyTargetScreen(),
       ),
       GoRoute(
         path: visualAds,
@@ -179,22 +181,12 @@ class AppRouter {
           return CreateEditChemistShopReportingScreen(reportToEdit: report);
         },
       ),
-      GoRoute(
-        path: trips,
-        builder: (context, state) => _placeholder('My Trips'),
-      ),
-      GoRoute(
-        path: orders,
-        builder: (context, state) => const MyOrderScreen(),
-      ),
+      GoRoute(path: orders, builder: (context, state) => const MyOrderScreen()),
       GoRoute(
         path: createOrder,
         builder: (context, state) => const CreateOrderScreen(),
       ),
-      GoRoute(
-        path: gifts,
-        builder: (context, state) => const GiftScreen(),
-      ),
+      GoRoute(path: gifts, builder: (context, state) => const GiftScreen()),
       GoRoute(
         path: requestGift,
         builder: (context, state) => const RequestGiftScreen(),
@@ -229,10 +221,5 @@ class AppRouter {
         builder: (context, state) => const TermsConditionsScreen(),
       ),
     ],
-  );
-
-  static Widget _placeholder(String title) => Scaffold(
-    appBar: AppBar(title: Text(title)),
-    body: Center(child: Text('Coming Soon')),
   );
 }
