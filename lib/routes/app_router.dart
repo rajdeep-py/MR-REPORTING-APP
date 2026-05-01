@@ -34,6 +34,8 @@ import '../screens/expense/create_expense_screen.dart';
 import '../screens/settings/settings_screen.dart';
 import '../screens/settings/privacy_policy_screen.dart';
 import '../screens/settings/terms_conditions_screen.dart';
+import '../screens/gift/gift_screen.dart';
+import '../screens/gift/request_gift_screen.dart';
 
 class AppRouter {
   static const String splash = '/';
@@ -61,6 +63,7 @@ class AppRouter {
   static const String createEditChemistReporting = '/create-edit-chemist-reporting';
   static const String orders = '/orders';
   static const String gifts = '/gifts';
+  static const String requestGift = '/request-gift';
   static const String expenses = '/expenses';
   static const String createExpense = '/create-expense';
   static const String profile = '/profile';
@@ -183,7 +186,11 @@ class AppRouter {
       ),
       GoRoute(
         path: gifts,
-        builder: (context, state) => _placeholder('Request Gifts'),
+        builder: (context, state) => const GiftScreen(),
+      ),
+      GoRoute(
+        path: requestGift,
+        builder: (context, state) => const RequestGiftScreen(),
       ),
       GoRoute(
         path: expenses,
