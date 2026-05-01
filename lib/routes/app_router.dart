@@ -36,6 +36,8 @@ import '../screens/settings/privacy_policy_screen.dart';
 import '../screens/settings/terms_conditions_screen.dart';
 import '../screens/gift/gift_screen.dart';
 import '../screens/gift/request_gift_screen.dart';
+import '../screens/order/my_order_screen.dart';
+import '../screens/order/create_order_screen.dart';
 
 class AppRouter {
   static const String splash = '/';
@@ -62,6 +64,7 @@ class AppRouter {
   static const String chemistReporting = '/chemist-reporting';
   static const String createEditChemistReporting = '/create-edit-chemist-reporting';
   static const String orders = '/orders';
+  static const String createOrder = '/create-order';
   static const String gifts = '/gifts';
   static const String requestGift = '/request-gift';
   static const String expenses = '/expenses';
@@ -182,7 +185,11 @@ class AppRouter {
       ),
       GoRoute(
         path: orders,
-        builder: (context, state) => _placeholder('My Orders'),
+        builder: (context, state) => const MyOrderScreen(),
+      ),
+      GoRoute(
+        path: createOrder,
+        builder: (context, state) => const CreateOrderScreen(),
       ),
       GoRoute(
         path: gifts,
