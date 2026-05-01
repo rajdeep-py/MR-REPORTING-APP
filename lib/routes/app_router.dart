@@ -8,6 +8,7 @@ import '../screens/home/home_screen.dart';
 import '../screens/notification/notification_screen.dart';
 import '../screens/about_us/about_us_screen.dart';
 import '../screens/routine/routine_screen.dart';
+import '../screens/team/my_team_screen.dart';
 
 class AppRouter {
   static const String splash = '/';
@@ -60,7 +61,7 @@ class AppRouter {
       ),
       GoRoute(
         path: team,
-        builder: (context, state) => _placeholder('My Team'),
+        builder: (context, state) => const MyTeamScreen(),
       ),
       GoRoute(
         path: routine,
