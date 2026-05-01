@@ -15,33 +15,40 @@ class MyTeamScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final teamState = ref.watch(teamProvider);
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      drawer: const SideNavBar(currentRoute: '/team'),
-      appBar: const CustomAppBar(
-        title: 'My Team',
-        subtitle: 'Manage your professional network',
-        showDrawerButton: true,
-        showBackButton: false,
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+        context.go(AppRouter.home);
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        drawer: const SideNavBar(currentRoute: '/team'),
+        appBar: const CustomAppBar(
+          title: 'My Team',
+          subtitle: 'Manage your professional network',
+          showDrawerButton: true,
+          showBackButton: false,
+        ),
+        body: teamState.teams.isEmpty
+            ? const Center(child: CircularProgressIndicator())
+            : ListView.separated(
+                padding: const EdgeInsets.all(AppGaps.screenPadding),
+                itemCount: teamState.teams.length,
+                separatorBuilder: (context, index) => AppGaps.largeV,
+                itemBuilder: (context, index) {
+                  final team = teamState.teams[index];
+                  return TeamCard(
+                    team: team,
+                    onTap: () {
+                      context.push(
+                        AppRouter.teamDetails.replaceFirst(':teamId', team.id),
+                      );
+                    },
+                  );
+                },
+              ),
       ),
-      body: teamState.teams.isEmpty
-          ? const Center(child: CircularProgressIndicator())
-          : ListView.separated(
-              padding: const EdgeInsets.all(AppGaps.screenPadding),
-              itemCount: teamState.teams.length,
-              separatorBuilder: (context, index) => AppGaps.largeV,
-              itemBuilder: (context, index) {
-                final team = teamState.teams[index];
-                return TeamCard(
-                  team: team,
-                  onTap: () {
-                    context.push(
-                      AppRouter.teamDetails.replaceFirst(':teamId', team.id),
-                    );
-                  },
-                );
-              },
-            ),
     );
   }
 }

@@ -37,55 +37,62 @@ class GiftScreen extends ConsumerWidget {
     final giftState = ref.watch(giftNotifierProvider);
     final notifier = ref.read(giftNotifierProvider.notifier);
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      drawer: const SideNavBar(currentRoute: AppRouter.gifts),
-      appBar: CustomAppBar(
-        title: 'Gift Requests',
-        subtitle: 'Manage doctor rewards',
-        showDrawerButton: true,
-        showBackButton: false,
-        actions: [
-          IconButton(
-            onPressed: () => context.push(AppRouter.requestGift),
-            icon: const Icon(Iconsax.gift, color: AppColors.black),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppGaps.screenPadding),
-        child: Column(
-          children: [
-            GiftFilterCard(
-              selectedDoctorId: giftState.filterDoctorId,
-              selectedDate: giftState.filterDate,
-              onDoctorChanged: notifier.setFilterDoctor,
-              onDateChanged: notifier.setFilterDate,
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+        context.go(AppRouter.home);
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        drawer: const SideNavBar(currentRoute: AppRouter.gifts),
+        appBar: CustomAppBar(
+          title: 'Gift Requests',
+          subtitle: 'Manage doctor rewards',
+          showDrawerButton: true,
+          showBackButton: false,
+          actions: [
+            IconButton(
+              onPressed: () => context.push(AppRouter.requestGift),
+              icon: const Icon(Iconsax.gift, color: AppColors.black),
             ),
-            AppGaps.largeV,
-            if (giftState.filteredGifts.isEmpty)
-              const Center(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 40),
-                  child: Text('No gift requests found.'),
-                ),
-              )
-            else
-              ListView.separated(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: giftState.filteredGifts.length,
-                separatorBuilder: (context, index) => AppGaps.mediumV,
-                itemBuilder: (context, index) {
-                  final gift = giftState.filteredGifts[index];
-                  return GiftCard(
-                    gift: gift,
-                    onTap: () => _showGiftDetails(context, ref, gift),
-                  );
-                },
-              ),
-            AppGaps.extraLargeV,
           ],
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppGaps.screenPadding),
+          child: Column(
+            children: [
+              GiftFilterCard(
+                selectedDoctorId: giftState.filterDoctorId,
+                selectedDate: giftState.filterDate,
+                onDoctorChanged: notifier.setFilterDoctor,
+                onDateChanged: notifier.setFilterDate,
+              ),
+              AppGaps.largeV,
+              if (giftState.filteredGifts.isEmpty)
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 40),
+                    child: Text('No gift requests found.'),
+                  ),
+                )
+              else
+                ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: giftState.filteredGifts.length,
+                  separatorBuilder: (context, index) => AppGaps.mediumV,
+                  itemBuilder: (context, index) {
+                    final gift = giftState.filteredGifts[index];
+                    return GiftCard(
+                      gift: gift,
+                      onTap: () => _showGiftDetails(context, ref, gift),
+                    );
+                  },
+                ),
+              AppGaps.extraLargeV,
+            ],
+          ),
         ),
       ),
     );

@@ -29,54 +29,61 @@ class MyExpenseScreen extends ConsumerWidget {
     final expenseState = ref.watch(expenseNotifierProvider);
     final expenseNotifier = ref.read(expenseNotifierProvider.notifier);
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      drawer: const SideNavBar(currentRoute: AppRouter.expenses),
-      appBar: CustomAppBar(
-        title: 'Expense Tracker',
-        subtitle: 'Log and track your daily claims',
-        showDrawerButton: true,
-        showBackButton: false,
-        actions: [
-          IconButton(
-            onPressed: () => context.push(AppRouter.createExpense),
-            icon: const Icon(Iconsax.add_square, color: AppColors.black),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppGaps.screenPadding),
-        child: Column(
-          children: [
-            ExpenseFilterCard(
-              selectedMonth: expenseState.selectedMonth,
-              selectedYear: expenseState.selectedYear,
-              onFilterChanged: expenseNotifier.setFilter,
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+        context.go(AppRouter.home);
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        drawer: const SideNavBar(currentRoute: AppRouter.expenses),
+        appBar: CustomAppBar(
+          title: 'Expense Tracker',
+          subtitle: 'Log and track your daily claims',
+          showDrawerButton: true,
+          showBackButton: false,
+          actions: [
+            IconButton(
+              onPressed: () => context.push(AppRouter.createExpense),
+              icon: const Icon(Iconsax.add_square, color: AppColors.black),
             ),
-            AppGaps.largeV,
-            if (expenseState.filteredExpenses.isEmpty)
-              const Center(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 40),
-                  child: Text('No expenses found for selected period.'),
-                ),
-              )
-            else
-              ListView.separated(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: expenseState.filteredExpenses.length,
-                separatorBuilder: (context, index) => AppGaps.mediumV,
-                itemBuilder: (context, index) {
-                  final expense = expenseState.filteredExpenses[index];
-                  return ExpenseCard(
-                    expense: expense,
-                    onTap: () => _showExpenseDetails(context, expense),
-                  );
-                },
-              ),
-            AppGaps.extraLargeV,
           ],
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppGaps.screenPadding),
+          child: Column(
+            children: [
+              ExpenseFilterCard(
+                selectedMonth: expenseState.selectedMonth,
+                selectedYear: expenseState.selectedYear,
+                onFilterChanged: expenseNotifier.setFilter,
+              ),
+              AppGaps.largeV,
+              if (expenseState.filteredExpenses.isEmpty)
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 40),
+                    child: Text('No expenses found for selected period.'),
+                  ),
+                )
+              else
+                ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: expenseState.filteredExpenses.length,
+                  separatorBuilder: (context, index) => AppGaps.mediumV,
+                  itemBuilder: (context, index) {
+                    final expense = expenseState.filteredExpenses[index];
+                    return ExpenseCard(
+                      expense: expense,
+                      onTap: () => _showExpenseDetails(context, expense),
+                    );
+                  },
+                ),
+              AppGaps.extraLargeV,
+            ],
+          ),
         ),
       ),
     );

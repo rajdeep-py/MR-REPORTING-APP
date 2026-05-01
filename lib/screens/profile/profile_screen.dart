@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
+import '../../routes/app_router.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/app_bar.dart';
 import '../../widgets/side_nav_bar.dart';
@@ -16,7 +18,7 @@ class ProfileScreen extends ConsumerStatefulWidget {
 
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   final _formKey = GlobalKey<FormState>();
-  
+
   late TextEditingController _nameController;
   late TextEditingController _phoneController;
   late TextEditingController _emailController;
@@ -72,7 +74,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       );
 
       await ref.read(profileProvider.notifier).updateProfile(updatedUser);
-      
+
       if (mounted) {
         AppTheme.showPremiumSnackBar(
           context: context,
@@ -87,66 +89,142 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final profileState = ref.watch(profileProvider);
     final user = profileState.user;
 
-    if (user == null) return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    if (user == null)
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      drawer: const SideNavBar(currentRoute: '/profile'),
-      appBar: const CustomAppBar(
-        title: 'My Profile',
-        subtitle: 'Personal & Professional Details',
-        showDrawerButton: true,
-        showBackButton: false,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppGaps.screenPadding),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildProfileHeader(user),
-              AppGaps.extraLargeV,
-              
-              _buildSectionTitle('PROFESSIONAL DETAILS'),
-              AppGaps.mediumV,
-              _buildTextField('Company Name', user.company, Iconsax.building, enabled: false),
-              AppGaps.mediumV,
-              _buildTextField('Designation', user.designation, Iconsax.user_tag, enabled: false),
-              AppGaps.mediumV,
-              _buildTextField('Headquarter Assigned', '', Iconsax.location, controller: _hqController),
-              AppGaps.mediumV,
-              _buildTextField('Area of Work', '', Iconsax.map_1, controller: _areaController),
-              
-              AppGaps.extraLargeV,
-              _buildSectionTitle('PERSONAL DETAILS'),
-              AppGaps.mediumV,
-              _buildTextField('Full Name', '', Iconsax.user, controller: _nameController),
-              AppGaps.mediumV,
-              _buildTextField('Phone Number', '', Iconsax.call, controller: _phoneController, keyboardType: TextInputType.phone),
-              AppGaps.mediumV,
-              _buildTextField('Email Address', '', Iconsax.sms, controller: _emailController, keyboardType: TextInputType.emailAddress),
-              AppGaps.mediumV,
-              _buildTextField('Alternative Phone', '', Iconsax.call, controller: _altPhoneController, keyboardType: TextInputType.phone),
-              AppGaps.mediumV,
-              _buildTextField('Alternative Email', '', Iconsax.sms, controller: _altEmailController, keyboardType: TextInputType.emailAddress),
-              AppGaps.mediumV,
-              _buildTextField('Residential Address', '', Iconsax.house, controller: _addressController, maxLines: 3),
-              
-              AppGaps.extraLargeV,
-              _buildSectionTitle('SECURITY'),
-              AppGaps.mediumV,
-              _buildTextField('Password', '', Iconsax.lock, controller: _passwordController, isPassword: true),
-              
-              AppGaps.extraLargeV,
-              ElevatedButton(
-                onPressed: profileState.isLoading ? null : _updateProfile,
-                child: profileState.isLoading 
-                  ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.white))
-                  : const Text('UPDATE PROFILE'),
-              ),
-              AppGaps.extraLargeV,
-            ],
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+        context.go(AppRouter.home);
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        drawer: const SideNavBar(currentRoute: '/profile'),
+        appBar: const CustomAppBar(
+          title: 'My Profile',
+          subtitle: 'Personal & Professional Details',
+          showDrawerButton: true,
+          showBackButton: false,
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppGaps.screenPadding),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildProfileHeader(user),
+                AppGaps.extraLargeV,
+
+                _buildSectionTitle('PROFESSIONAL DETAILS'),
+                AppGaps.mediumV,
+                _buildTextField(
+                  'Company Name',
+                  user.company,
+                  Iconsax.building,
+                  enabled: false,
+                ),
+                AppGaps.mediumV,
+                _buildTextField(
+                  'Designation',
+                  user.designation,
+                  Iconsax.user_tag,
+                  enabled: false,
+                ),
+                AppGaps.mediumV,
+                _buildTextField(
+                  'Headquarter Assigned',
+                  '',
+                  Iconsax.location,
+                  controller: _hqController,
+                ),
+                AppGaps.mediumV,
+                _buildTextField(
+                  'Area of Work',
+                  '',
+                  Iconsax.map_1,
+                  controller: _areaController,
+                ),
+
+                AppGaps.extraLargeV,
+                _buildSectionTitle('PERSONAL DETAILS'),
+                AppGaps.mediumV,
+                _buildTextField(
+                  'Full Name',
+                  '',
+                  Iconsax.user,
+                  controller: _nameController,
+                ),
+                AppGaps.mediumV,
+                _buildTextField(
+                  'Phone Number',
+                  '',
+                  Iconsax.call,
+                  controller: _phoneController,
+                  keyboardType: TextInputType.phone,
+                ),
+                AppGaps.mediumV,
+                _buildTextField(
+                  'Email Address',
+                  '',
+                  Iconsax.sms,
+                  controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
+                ),
+                AppGaps.mediumV,
+                _buildTextField(
+                  'Alternative Phone',
+                  '',
+                  Iconsax.call,
+                  controller: _altPhoneController,
+                  keyboardType: TextInputType.phone,
+                ),
+                AppGaps.mediumV,
+                _buildTextField(
+                  'Alternative Email',
+                  '',
+                  Iconsax.sms,
+                  controller: _altEmailController,
+                  keyboardType: TextInputType.emailAddress,
+                ),
+                AppGaps.mediumV,
+                _buildTextField(
+                  'Residential Address',
+                  '',
+                  Iconsax.house,
+                  controller: _addressController,
+                  maxLines: 3,
+                ),
+
+                AppGaps.extraLargeV,
+                _buildSectionTitle('SECURITY'),
+                AppGaps.mediumV,
+                _buildTextField(
+                  'Password',
+                  '',
+                  Iconsax.lock,
+                  controller: _passwordController,
+                  isPassword: true,
+                ),
+
+                AppGaps.extraLargeV,
+                ElevatedButton(
+                  onPressed: profileState.isLoading ? null : _updateProfile,
+                  child: profileState.isLoading
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: AppColors.white,
+                          ),
+                        )
+                      : const Text('UPDATE PROFILE'),
+                ),
+                AppGaps.extraLargeV,
+              ],
+            ),
           ),
         ),
       ),
@@ -165,9 +243,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 decoration: BoxDecoration(
                   color: AppColors.surface,
                   shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.black.withAlpha(20), width: 4),
+                  border: Border.all(
+                    color: AppColors.black.withAlpha(20),
+                    width: 4,
+                  ),
                 ),
-                child: const Icon(Iconsax.user, size: 60, color: AppColors.black),
+                child: const Icon(
+                  Iconsax.user,
+                  size: 60,
+                  color: AppColors.black,
+                ),
               ),
               Positioned(
                 bottom: 0,
@@ -178,7 +263,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     color: AppColors.black,
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Iconsax.camera, color: AppColors.white, size: 18),
+                  child: const Icon(
+                    Iconsax.camera,
+                    color: AppColors.white,
+                    size: 18,
+                  ),
                 ),
               ),
             ],
@@ -186,7 +275,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           AppGaps.mediumV,
           Text(
             user.name,
-            style: Theme.of(context).textTheme.displayMedium?.copyWith(fontSize: 24, color: AppColors.black),
+            style: Theme.of(context).textTheme.displayMedium?.copyWith(
+              fontSize: 24,
+              color: AppColors.black,
+            ),
           ),
           Text(
             '${user.designation} • ${user.company}',
@@ -210,8 +302,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   Widget _buildTextField(
-    String label, 
-    String initialValue, 
+    String label,
+    String initialValue,
     IconData icon, {
     TextEditingController? controller,
     bool enabled = true,
@@ -224,7 +316,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       children: [
         Text(
           label,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 10, fontWeight: FontWeight.w600),
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            fontSize: 10,
+            fontWeight: FontWeight.w600,
+          ),
         ),
         AppGaps.smallV,
         TextFormField(
@@ -241,7 +336,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           decoration: InputDecoration(
             prefixIcon: Icon(icon, size: 20, color: AppColors.coolGrey),
             filled: true,
-            fillColor: enabled ? AppColors.surface : AppColors.lightGrey.withAlpha(100),
+            fillColor: enabled
+                ? AppColors.surface
+                : AppColors.lightGrey.withAlpha(100),
           ),
         ),
       ],

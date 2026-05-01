@@ -15,7 +15,11 @@ import '../../models/order.dart';
 class MyOrderScreen extends ConsumerWidget {
   const MyOrderScreen({super.key});
 
-  void _showOrderDetails(BuildContext context, WidgetRef ref, OrderModel order) {
+  void _showOrderDetails(
+    BuildContext context,
+    WidgetRef ref,
+    OrderModel order,
+  ) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -37,55 +41,62 @@ class MyOrderScreen extends ConsumerWidget {
     final orderState = ref.watch(orderNotifierProvider);
     final notifier = ref.read(orderNotifierProvider.notifier);
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      drawer: const SideNavBar(currentRoute: AppRouter.orders),
-      appBar: CustomAppBar(
-        title: 'My Orders',
-        subtitle: 'Track your commercial logs',
-        showDrawerButton: true,
-        showBackButton: false,
-        actions: [
-          IconButton(
-            onPressed: () => context.push(AppRouter.createOrder),
-            icon: const Icon(Iconsax.add_square, color: AppColors.black),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppGaps.screenPadding),
-        child: Column(
-          children: [
-            OrderFilterCard(
-              selectedStatus: orderState.filterStatus,
-              selectedDateRange: orderState.filterDateRange,
-              onStatusChanged: notifier.setFilterStatus,
-              onDateRangeChanged: notifier.setFilterDateRange,
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+        context.go(AppRouter.home);
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        drawer: const SideNavBar(currentRoute: AppRouter.orders),
+        appBar: CustomAppBar(
+          title: 'My Orders',
+          subtitle: 'Track your commercial logs',
+          showDrawerButton: true,
+          showBackButton: false,
+          actions: [
+            IconButton(
+              onPressed: () => context.push(AppRouter.createOrder),
+              icon: const Icon(Iconsax.add_square, color: AppColors.black),
             ),
-            AppGaps.largeV,
-            if (orderState.filteredOrders.isEmpty)
-              const Center(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 40),
-                  child: Text('No orders found.'),
-                ),
-              )
-            else
-              ListView.separated(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: orderState.filteredOrders.length,
-                separatorBuilder: (context, index) => AppGaps.mediumV,
-                itemBuilder: (context, index) {
-                  final order = orderState.filteredOrders[index];
-                  return OrderCard(
-                    order: order,
-                    onTap: () => _showOrderDetails(context, ref, order),
-                  );
-                },
-              ),
-            AppGaps.extraLargeV,
           ],
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppGaps.screenPadding),
+          child: Column(
+            children: [
+              OrderFilterCard(
+                selectedStatus: orderState.filterStatus,
+                selectedDateRange: orderState.filterDateRange,
+                onStatusChanged: notifier.setFilterStatus,
+                onDateRangeChanged: notifier.setFilterDateRange,
+              ),
+              AppGaps.largeV,
+              if (orderState.filteredOrders.isEmpty)
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 40),
+                    child: Text('No orders found.'),
+                  ),
+                )
+              else
+                ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: orderState.filteredOrders.length,
+                  separatorBuilder: (context, index) => AppGaps.mediumV,
+                  itemBuilder: (context, index) {
+                    final order = orderState.filteredOrders[index];
+                    return OrderCard(
+                      order: order,
+                      onTap: () => _showOrderDetails(context, ref, order),
+                    );
+                  },
+                ),
+              AppGaps.extraLargeV,
+            ],
+          ),
         ),
       ),
     );

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import '../../routes/app_router.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/app_bar.dart';
 import '../../widgets/side_nav_bar.dart';
@@ -21,51 +23,56 @@ class AboutUsScreen extends ConsumerWidget {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      drawer: const SideNavBar(currentRoute: '/about'),
-      appBar: const CustomAppBar(
-        title: 'About Us',
-        subtitle: 'Our Vision & Values',
-        showDrawerButton: false,
-        showBackButton: true,
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(AppGaps.screenPadding),
-              child: Column(
-                children: [
-                  CompanyHeaderCard(
-                    companyName: aboutUs.companyName,
-                    tagline: aboutUs.tagline,
-                  ),
-                  AppGaps.largeV,
-                  CompanyDescriptionCard(
-                    description: aboutUs.description,
-                  ),
-                  AppGaps.largeV,
-                  DirectorMessageCard(
-                    directorName: aboutUs.directorName,
-                    message: aboutUs.directorMessage,
-                  ),
-                  AppGaps.largeV,
-                  CompanyContactCard(
-                    phone: aboutUs.phone,
-                    email: aboutUs.email,
-                    address: aboutUs.address,
-                    website: aboutUs.website,
-                  ),
-                  AppGaps.extraLargeV,
-                ],
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+        context.go(AppRouter.settings);
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        drawer: const SideNavBar(currentRoute: '/about'),
+        appBar: const CustomAppBar(
+          title: 'About Us',
+          subtitle: 'Our Vision & Values',
+          showDrawerButton: false,
+          showBackButton: true,
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(AppGaps.screenPadding),
+                child: Column(
+                  children: [
+                    CompanyHeaderCard(
+                      companyName: aboutUs.companyName,
+                      tagline: aboutUs.tagline,
+                    ),
+                    AppGaps.largeV,
+                    CompanyDescriptionCard(description: aboutUs.description),
+                    AppGaps.largeV,
+                    DirectorMessageCard(
+                      directorName: aboutUs.directorName,
+                      message: aboutUs.directorMessage,
+                    ),
+                    AppGaps.largeV,
+                    CompanyContactCard(
+                      phone: aboutUs.phone,
+                      email: aboutUs.email,
+                      address: aboutUs.address,
+                      website: aboutUs.website,
+                    ),
+                    AppGaps.extraLargeV,
+                  ],
+                ),
               ),
-            ),
-            CustomFooter(
-              headerText: aboutUs.companyName,
-              tagline: aboutUs.tagline,
-            ),
-          ],
+              CustomFooter(
+                headerText: aboutUs.companyName,
+                tagline: aboutUs.tagline,
+              ),
+            ],
+          ),
         ),
       ),
     );

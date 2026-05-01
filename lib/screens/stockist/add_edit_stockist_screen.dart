@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../routes/app_router.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/app_bar.dart';
 import '../../models/stockist.dart';
@@ -161,146 +162,153 @@ class _AddEditStockistScreenState extends ConsumerState<AddEditStockistScreen> {
   Widget build(BuildContext context) {
     final bool isEditing = widget.stockistToEdit != null;
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: CustomAppBar(
-        title: isEditing ? 'Edit Stockist' : 'Add New Stockist',
-        subtitle: isEditing
-            ? 'Update distribution details'
-            : 'Register a new warehouse partner',
-        showBackButton: true,
-        showDrawerButton: false,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppGaps.screenPadding),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Stack(
-                  children: [
-                    Container(
-                      width: 140,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        color: AppColors.surface,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: AppColors.black.withAlpha(30),
-                          width: 2,
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+        context.go(AppRouter.stockist);
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        appBar: CustomAppBar(
+          title: isEditing ? 'Edit Stockist' : 'Add New Stockist',
+          subtitle: isEditing
+              ? 'Update distribution details'
+              : 'Register a new warehouse partner',
+          showBackButton: true,
+          showDrawerButton: false,
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppGaps.screenPadding),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Stack(
+                    children: [
+                      Container(
+                        width: 140,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          color: AppColors.surface,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: AppColors.black.withAlpha(30),
+                            width: 2,
+                          ),
+                          image: _imagePath != null
+                              ? DecorationImage(
+                                  image: _imagePath!.startsWith('http')
+                                      ? NetworkImage(_imagePath!)
+                                      : FileImage(File(_imagePath!))
+                                            as ImageProvider,
+                                  fit: BoxFit.cover,
+                                )
+                              : null,
                         ),
-                        image: _imagePath != null
-                            ? DecorationImage(
-                                image: _imagePath!.startsWith('http')
-                                    ? NetworkImage(_imagePath!)
-                                    : FileImage(File(_imagePath!))
-                                          as ImageProvider,
-                                fit: BoxFit.cover,
+                        child: _imagePath == null
+                            ? const Icon(
+                                Iconsax.box,
+                                size: 40,
+                                color: AppColors.coolGrey,
                               )
                             : null,
                       ),
-                      child: _imagePath == null
-                          ? const Icon(
-                              Iconsax.box,
-                              size: 40,
-                              color: AppColors.coolGrey,
-                            )
-                          : null,
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: InkWell(
-                        onTap: _showImagePickerOptions,
-                        child: Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: const BoxDecoration(
-                            color: AppColors.black,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Iconsax.camera,
-                            color: AppColors.white,
-                            size: 16,
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: InkWell(
+                          onTap: _showImagePickerOptions,
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: const BoxDecoration(
+                              color: AppColors.black,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Iconsax.camera,
+                              color: AppColors.white,
+                              size: 16,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 32),
-              _buildSectionTitle(context, 'BASIC INFORMATION'),
-              _buildField('Stockist / Agency Name', Iconsax.shop, _nameCtrl),
-              AppGaps.mediumV,
-              _buildField(
-                'Warehouse / Office Address',
-                Iconsax.location,
-                _addressCtrl,
-                maxLines: 2,
-              ),
-              AppGaps.mediumV,
-              _buildField(
-                'Stockist Description',
-                Iconsax.document_text,
-                _descriptionCtrl,
-                maxLines: 3,
-              ),
-              AppGaps.largeV,
-
-              _buildSectionTitle(context, 'COMMERCIAL TERMS'),
-              _buildField(
-                'Min Order Value (e.g. ₹10,000)',
-                Iconsax.money_send,
-                _minOrderValueCtrl,
-              ),
-              AppGaps.mediumV,
-              _buildField(
-                'Expected Delivery Time',
-                Iconsax.truck_fast,
-                _deliveryTimeCtrl,
-              ),
-              AppGaps.mediumV,
-              _buildField(
-                'Medicines Interested In',
-                Icons.medical_services,
-                _medicinesCtrl,
-              ),
-              AppGaps.largeV,
-
-              _buildSectionTitle(context, 'CONTACT DETAILS'),
-              _buildField('Phone Number', Iconsax.call, _phoneCtrl),
-              AppGaps.mediumV,
-              _buildField('Email Address', Iconsax.sms, _emailCtrl),
-
-              AppGaps.extraLargeV,
-              SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: ElevatedButton(
-                  onPressed: _save,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
-                  child: Text(
-                    isEditing
-                        ? 'UPDATE STOCKIST PROFILE'
-                        : 'SAVE STOCKIST PROFILE',
-                    style: const TextStyle(
-                      color: AppColors.white,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 1,
-                    ),
+                    ],
                   ),
                 ),
-              ),
-              AppGaps.extraLargeV,
-            ],
+                const SizedBox(height: 32),
+                _buildSectionTitle(context, 'BASIC INFORMATION'),
+                _buildField('Stockist / Agency Name', Iconsax.shop, _nameCtrl),
+                AppGaps.mediumV,
+                _buildField(
+                  'Warehouse / Office Address',
+                  Iconsax.location,
+                  _addressCtrl,
+                  maxLines: 2,
+                ),
+                AppGaps.mediumV,
+                _buildField(
+                  'Stockist Description',
+                  Iconsax.document_text,
+                  _descriptionCtrl,
+                  maxLines: 3,
+                ),
+                AppGaps.largeV,
+
+                _buildSectionTitle(context, 'COMMERCIAL TERMS'),
+                _buildField(
+                  'Min Order Value (e.g. ₹10,000)',
+                  Iconsax.money_send,
+                  _minOrderValueCtrl,
+                ),
+                AppGaps.mediumV,
+                _buildField(
+                  'Expected Delivery Time',
+                  Iconsax.truck_fast,
+                  _deliveryTimeCtrl,
+                ),
+                AppGaps.mediumV,
+                _buildField(
+                  'Medicines Interested In',
+                  Icons.medical_services,
+                  _medicinesCtrl,
+                ),
+                AppGaps.largeV,
+
+                _buildSectionTitle(context, 'CONTACT DETAILS'),
+                _buildField('Phone Number', Iconsax.call, _phoneCtrl),
+                AppGaps.mediumV,
+                _buildField('Email Address', Iconsax.sms, _emailCtrl),
+
+                AppGaps.extraLargeV,
+                SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: ElevatedButton(
+                    onPressed: _save,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                    child: Text(
+                      isEditing
+                          ? 'UPDATE STOCKIST PROFILE'
+                          : 'SAVE STOCKIST PROFILE',
+                      style: const TextStyle(
+                        color: AppColors.white,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 1,
+                      ),
+                    ),
+                  ),
+                ),
+                AppGaps.extraLargeV,
+              ],
+            ),
           ),
         ),
       ),

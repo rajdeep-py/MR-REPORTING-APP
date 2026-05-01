@@ -28,45 +28,52 @@ class StockistDetailScreen extends ConsumerWidget {
       return const Scaffold(body: Center(child: Text('Stockist not found')));
     }
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: CustomAppBar(
-        title: 'Stockist Detail',
-        subtitle: 'Distribution Partner',
-        showBackButton: true,
-        showDrawerButton: false,
-        actions: [
-          IconButton(
-            onPressed: () =>
-                context.push(AppRouter.addEditStockist, extra: stockist),
-            icon: const Icon(Iconsax.edit, color: AppColors.black),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppGaps.screenPadding),
-        child: Column(
-          children: [
-            StockistHeaderCard(
-              name: stockist.name,
-              photoUrl: stockist.photoUrl,
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+        context.go(AppRouter.stockist);
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        appBar: CustomAppBar(
+          title: 'Stockist Detail',
+          subtitle: 'Distribution Partner',
+          showBackButton: true,
+          showDrawerButton: false,
+          actions: [
+            IconButton(
+              onPressed: () =>
+                  context.push(AppRouter.addEditStockist, extra: stockist),
+              icon: const Icon(Iconsax.edit, color: AppColors.black),
             ),
-            AppGaps.largeV,
-            StockistDescriptionCard(description: stockist.description),
-            AppGaps.largeV,
-            StockistOrderDeliveryInfoCard(
-              minOrderValue: stockist.minOrderValue,
-              expectedDeliveryTime: stockist.expectedDeliveryTime,
-              medicinesInterestedIn: stockist.medicinesInterestedIn,
-            ),
-            AppGaps.largeV,
-            StockistContactCard(
-              phone: stockist.phone,
-              email: stockist.email,
-              address: stockist.address,
-            ),
-            AppGaps.extraLargeV,
           ],
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppGaps.screenPadding),
+          child: Column(
+            children: [
+              StockistHeaderCard(
+                name: stockist.name,
+                photoUrl: stockist.photoUrl,
+              ),
+              AppGaps.largeV,
+              StockistDescriptionCard(description: stockist.description),
+              AppGaps.largeV,
+              StockistOrderDeliveryInfoCard(
+                minOrderValue: stockist.minOrderValue,
+                expectedDeliveryTime: stockist.expectedDeliveryTime,
+                medicinesInterestedIn: stockist.medicinesInterestedIn,
+              ),
+              AppGaps.largeV,
+              StockistContactCard(
+                phone: stockist.phone,
+                email: stockist.email,
+                address: stockist.address,
+              ),
+              AppGaps.extraLargeV,
+            ],
+          ),
         ),
       ),
     );

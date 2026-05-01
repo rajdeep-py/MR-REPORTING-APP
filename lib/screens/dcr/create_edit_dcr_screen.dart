@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
+import '../../routes/app_router.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/app_bar.dart';
 import '../../models/dcr.dart';
@@ -83,127 +84,134 @@ class _CreateEditDCRScreenState extends ConsumerState<CreateEditDCRScreen> {
     final visualAds = ref.watch(visualAdsNotifierProvider).allAds;
     final bool isEditing = widget.dcrToEdit != null;
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: CustomAppBar(
-        title: isEditing ? 'Edit DCR' : 'Create New DCR',
-        subtitle: isEditing
-            ? 'Update your visit report'
-            : 'Report a new doctor call',
-        showBackButton: true,
-        showDrawerButton: false,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppGaps.screenPadding),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildSectionTitle(context, 'SELECT DOCTOR'),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: AppColors.coolGrey.withAlpha(30)),
-                ),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<DoctorModel>(
-                    isExpanded: true,
-                    hint: const Text('Select a Doctor'),
-                    value: _selectedDoctor,
-                    items: doctors
-                        .map(
-                          (d) => DropdownMenuItem(
-                            value: d,
-                            child: Text(
-                              d.name,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w600,
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+        context.go(AppRouter.dcr);
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        appBar: CustomAppBar(
+          title: isEditing ? 'Edit DCR' : 'Create New DCR',
+          subtitle: isEditing
+              ? 'Update your visit report'
+              : 'Report a new doctor call',
+          showBackButton: true,
+          showDrawerButton: false,
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppGaps.screenPadding),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildSectionTitle(context, 'SELECT DOCTOR'),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: AppColors.coolGrey.withAlpha(30)),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<DoctorModel>(
+                      isExpanded: true,
+                      hint: const Text('Select a Doctor'),
+                      value: _selectedDoctor,
+                      items: doctors
+                          .map(
+                            (d) => DropdownMenuItem(
+                              value: d,
+                              child: Text(
+                                d.name,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ),
+                          )
+                          .toList(),
+                      onChanged: (val) => setState(() => _selectedDoctor = val),
+                    ),
+                  ),
+                ),
+                AppGaps.largeV,
+
+                _buildSectionTitle(context, 'VISIT DETAILS'),
+                _buildField('Place of Visit', Iconsax.location, _placeCtrl),
+                AppGaps.mediumV,
+                _buildField('Date (YYYY-MM-DD)', Iconsax.calendar, _dateCtrl),
+                AppGaps.mediumV,
+                _buildField('Time', Iconsax.timer, _timeCtrl),
+                AppGaps.largeV,
+
+                _buildSectionTitle(context, 'SELECT VISUAL ADS TO PRESENT'),
+                Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(color: AppColors.coolGrey.withAlpha(30)),
+                  ),
+                  child: ListView.separated(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: visualAds.length,
+                    separatorBuilder: (context, index) =>
+                        const Divider(height: 1),
+                    itemBuilder: (context, index) {
+                      final ad = visualAds[index];
+                      final isSelected = _selectedAds.any((a) => a.id == ad.id);
+                      return CheckboxListTile(
+                        title: Text(
+                          ad.productName,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
                           ),
-                        )
-                        .toList(),
-                    onChanged: (val) => setState(() => _selectedDoctor = val),
-                  ),
-                ),
-              ),
-              AppGaps.largeV,
-
-              _buildSectionTitle(context, 'VISIT DETAILS'),
-              _buildField('Place of Visit', Iconsax.location, _placeCtrl),
-              AppGaps.mediumV,
-              _buildField('Date (YYYY-MM-DD)', Iconsax.calendar, _dateCtrl),
-              AppGaps.mediumV,
-              _buildField('Time', Iconsax.timer, _timeCtrl),
-              AppGaps.largeV,
-
-              _buildSectionTitle(context, 'SELECT VISUAL ADS TO PRESENT'),
-              Container(
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.circular(24),
-                  border: Border.all(color: AppColors.coolGrey.withAlpha(30)),
-                ),
-                child: ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: visualAds.length,
-                  separatorBuilder: (context, index) =>
-                      const Divider(height: 1),
-                  itemBuilder: (context, index) {
-                    final ad = visualAds[index];
-                    final isSelected = _selectedAds.any((a) => a.id == ad.id);
-                    return CheckboxListTile(
-                      title: Text(
-                        ad.productName,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
                         ),
-                      ),
-                      value: isSelected,
-                      activeColor: AppColors.black,
-                      onChanged: (val) {
-                        setState(() {
-                          if (val == true) {
-                            _selectedAds.add(ad);
-                          } else {
-                            _selectedAds.removeWhere((a) => a.id == ad.id);
-                          }
-                        });
-                      },
-                    );
-                  },
+                        value: isSelected,
+                        activeColor: AppColors.black,
+                        onChanged: (val) {
+                          setState(() {
+                            if (val == true) {
+                              _selectedAds.add(ad);
+                            } else {
+                              _selectedAds.removeWhere((a) => a.id == ad.id);
+                            }
+                          });
+                        },
+                      );
+                    },
+                  ),
                 ),
-              ),
 
-              AppGaps.extraLargeV,
-              SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: ElevatedButton(
-                  onPressed: _save,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
+                AppGaps.extraLargeV,
+                SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: ElevatedButton(
+                    onPressed: _save,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                     ),
-                  ),
-                  child: Text(
-                    isEditing ? 'UPDATE REPORT' : 'SUBMIT REPORT',
-                    style: const TextStyle(
-                      color: AppColors.white,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 1,
+                    child: Text(
+                      isEditing ? 'UPDATE REPORT' : 'SUBMIT REPORT',
+                      style: const TextStyle(
+                        color: AppColors.white,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 1,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              AppGaps.extraLargeV,
-            ],
+                AppGaps.extraLargeV,
+              ],
+            ),
           ),
         ),
       ),

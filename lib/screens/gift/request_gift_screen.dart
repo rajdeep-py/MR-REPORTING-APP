@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
+import '../../routes/app_router.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/app_bar.dart';
 import '../../models/gift.dart';
@@ -29,7 +30,7 @@ class _RequestGiftScreenState extends ConsumerState<RequestGiftScreen> {
     'Anniversary',
     'Festival',
     'Clinic Inauguration',
-    'Others'
+    'Others',
   ];
 
   final List<String> _giftItems = [
@@ -38,11 +39,14 @@ class _RequestGiftScreenState extends ConsumerState<RequestGiftScreen> {
     'Wall Clock',
     'Table Lamp',
     'Customized Memento',
-    'Reference Book'
+    'Reference Book',
   ];
 
   void _submit() {
-    if (_formKey.currentState!.validate() && _selectedDoctor != null && _selectedOccasion != null && _selectedGiftItem != null) {
+    if (_formKey.currentState!.validate() &&
+        _selectedDoctor != null &&
+        _selectedOccasion != null &&
+        _selectedGiftItem != null) {
       final newGift = GiftModel(
         id: 'REQ${DateTime.now().millisecondsSinceEpoch.toString().substring(7)}',
         doctor: _selectedDoctor!,
@@ -68,54 +72,77 @@ class _RequestGiftScreenState extends ConsumerState<RequestGiftScreen> {
   Widget build(BuildContext context) {
     final doctors = ref.watch(doctorNotifierProvider).allDoctors;
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: const CustomAppBar(
-        title: 'Request Gift',
-        subtitle: 'Fill details for doctor rewards',
-        showBackButton: true,
-        showDrawerButton: false,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppGaps.screenPadding),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildSectionTitle('SELECT DOCTOR'),
-              _buildDoctorDropdown(doctors),
-              AppGaps.largeV,
-              
-              _buildSectionTitle('DATE SELECTION'),
-              _buildDatePicker(),
-              AppGaps.largeV,
-              
-              _buildSectionTitle('OCCASION'),
-              _buildStringDropdown('Select Occasion', _selectedOccasion, _occasions, (v) => setState(() => _selectedOccasion = v)),
-              AppGaps.largeV,
-              
-              _buildSectionTitle('GIFT ITEM'),
-              _buildStringDropdown('Select Gift Item', _selectedGiftItem, _giftItems, (v) => setState(() => _selectedGiftItem = v)),
-              
-              AppGaps.extraLargeV,
-              SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: ElevatedButton(
-                  onPressed: _submit,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.black,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                  ),
-                  child: const Text(
-                    'SUBMIT REQUEST',
-                    style: TextStyle(color: AppColors.white, fontWeight: FontWeight.w800, letterSpacing: 1),
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+        context.go(AppRouter.gifts);
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        appBar: const CustomAppBar(
+          title: 'Request Gift',
+          subtitle: 'Fill details for doctor rewards',
+          showBackButton: true,
+          showDrawerButton: false,
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppGaps.screenPadding),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildSectionTitle('SELECT DOCTOR'),
+                _buildDoctorDropdown(doctors),
+                AppGaps.largeV,
+
+                _buildSectionTitle('DATE SELECTION'),
+                _buildDatePicker(),
+                AppGaps.largeV,
+
+                _buildSectionTitle('OCCASION'),
+                _buildStringDropdown(
+                  'Select Occasion',
+                  _selectedOccasion,
+                  _occasions,
+                  (v) => setState(() => _selectedOccasion = v),
+                ),
+                AppGaps.largeV,
+
+                _buildSectionTitle('GIFT ITEM'),
+                _buildStringDropdown(
+                  'Select Gift Item',
+                  _selectedGiftItem,
+                  _giftItems,
+                  (v) => setState(() => _selectedGiftItem = v),
+                ),
+
+                AppGaps.extraLargeV,
+                SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: ElevatedButton(
+                    onPressed: _submit,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                    child: const Text(
+                      'SUBMIT REQUEST',
+                      style: TextStyle(
+                        color: AppColors.white,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 1,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-              AppGaps.extraLargeV,
-            ],
+                AppGaps.extraLargeV,
+              ],
+            ),
           ),
         ),
       ),
@@ -127,7 +154,10 @@ class _RequestGiftScreenState extends ConsumerState<RequestGiftScreen> {
       padding: const EdgeInsets.only(bottom: 12),
       child: Text(
         title,
-        style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w800, letterSpacing: 1.5),
+        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+          fontWeight: FontWeight.w800,
+          letterSpacing: 1.5,
+        ),
       ),
     );
   }
@@ -145,10 +175,17 @@ class _RequestGiftScreenState extends ConsumerState<RequestGiftScreen> {
           isExpanded: true,
           hint: const Text('Select a Doctor'),
           value: _selectedDoctor,
-          items: doctors.map((d) => DropdownMenuItem(
-            value: d,
-            child: Text(d.name, style: const TextStyle(fontWeight: FontWeight.w600)),
-          )).toList(),
+          items: doctors
+              .map(
+                (d) => DropdownMenuItem(
+                  value: d,
+                  child: Text(
+                    d.name,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                ),
+              )
+              .toList(),
           onChanged: (val) => setState(() => _selectedDoctor = val),
         ),
       ),
@@ -189,7 +226,12 @@ class _RequestGiftScreenState extends ConsumerState<RequestGiftScreen> {
     );
   }
 
-  Widget _buildStringDropdown(String hint, String? value, List<String> items, Function(String?) onChanged) {
+  Widget _buildStringDropdown(
+    String hint,
+    String? value,
+    List<String> items,
+    Function(String?) onChanged,
+  ) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
@@ -202,10 +244,17 @@ class _RequestGiftScreenState extends ConsumerState<RequestGiftScreen> {
           isExpanded: true,
           hint: Text(hint),
           value: value,
-          items: items.map((i) => DropdownMenuItem(
-            value: i,
-            child: Text(i, style: const TextStyle(fontWeight: FontWeight.w600)),
-          )).toList(),
+          items: items
+              .map(
+                (i) => DropdownMenuItem(
+                  value: i,
+                  child: Text(
+                    i,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                ),
+              )
+              .toList(),
           onChanged: onChanged,
         ),
       ),

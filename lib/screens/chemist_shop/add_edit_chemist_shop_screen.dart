@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../routes/app_router.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/app_bar.dart';
 import '../../models/chemist_shop.dart';
@@ -150,120 +151,127 @@ class _AddEditChemistShopScreenState
   Widget build(BuildContext context) {
     final bool isEditing = widget.shopToEdit != null;
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: CustomAppBar(
-        title: isEditing ? 'Edit Chemist Shop' : 'Add New Chemist Shop',
-        subtitle: isEditing
-            ? 'Update shop details'
-            : 'Register a new pharmacy partner',
-        showBackButton: true,
-        showDrawerButton: false,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppGaps.screenPadding),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Stack(
-                  children: [
-                    Container(
-                      width: 140,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        color: AppColors.surface,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: AppColors.black.withAlpha(30),
-                          width: 2,
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+        context.go(AppRouter.chemist);
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        appBar: CustomAppBar(
+          title: isEditing ? 'Edit Chemist Shop' : 'Add New Chemist Shop',
+          subtitle: isEditing
+              ? 'Update shop details'
+              : 'Register a new pharmacy partner',
+          showBackButton: true,
+          showDrawerButton: false,
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppGaps.screenPadding),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Stack(
+                    children: [
+                      Container(
+                        width: 140,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          color: AppColors.surface,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: AppColors.black.withAlpha(30),
+                            width: 2,
+                          ),
+                          image: _imagePath != null
+                              ? DecorationImage(
+                                  image: _imagePath!.startsWith('http')
+                                      ? NetworkImage(_imagePath!)
+                                      : FileImage(File(_imagePath!))
+                                            as ImageProvider,
+                                  fit: BoxFit.cover,
+                                )
+                              : null,
                         ),
-                        image: _imagePath != null
-                            ? DecorationImage(
-                                image: _imagePath!.startsWith('http')
-                                    ? NetworkImage(_imagePath!)
-                                    : FileImage(File(_imagePath!))
-                                          as ImageProvider,
-                                fit: BoxFit.cover,
+                        child: _imagePath == null
+                            ? const Icon(
+                                Iconsax.hospital,
+                                size: 40,
+                                color: AppColors.coolGrey,
                               )
                             : null,
                       ),
-                      child: _imagePath == null
-                          ? const Icon(
-                              Iconsax.hospital,
-                              size: 40,
-                              color: AppColors.coolGrey,
-                            )
-                          : null,
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: InkWell(
-                        onTap: _showImagePickerOptions,
-                        child: Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: const BoxDecoration(
-                            color: AppColors.black,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Iconsax.camera,
-                            color: AppColors.white,
-                            size: 16,
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: InkWell(
+                          onTap: _showImagePickerOptions,
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: const BoxDecoration(
+                              color: AppColors.black,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Iconsax.camera,
+                              color: AppColors.white,
+                              size: 16,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 32),
-              _buildField('Shop Name', Iconsax.shop, _nameCtrl),
-              AppGaps.mediumV,
-              _buildField(
-                'Store Address',
-                Iconsax.location,
-                _addressCtrl,
-                maxLines: 2,
-              ),
-              AppGaps.mediumV,
-              _buildField('Phone Number', Iconsax.call, _phoneCtrl),
-              AppGaps.mediumV,
-              _buildField('Email Address', Iconsax.sms, _emailCtrl),
-              AppGaps.mediumV,
-              _buildField(
-                'Store Description',
-                Iconsax.document_text,
-                _descriptionCtrl,
-                maxLines: 3,
-              ),
-              AppGaps.extraLargeV,
-              SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: ElevatedButton(
-                  onPressed: _save,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
-                  child: Text(
-                    isEditing ? 'UPDATE SHOP PROFILE' : 'SAVE SHOP PROFILE',
-                    style: const TextStyle(
-                      color: AppColors.white,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 1,
-                    ),
+                    ],
                   ),
                 ),
-              ),
-              AppGaps.extraLargeV,
-            ],
+                const SizedBox(height: 32),
+                _buildField('Shop Name', Iconsax.shop, _nameCtrl),
+                AppGaps.mediumV,
+                _buildField(
+                  'Store Address',
+                  Iconsax.location,
+                  _addressCtrl,
+                  maxLines: 2,
+                ),
+                AppGaps.mediumV,
+                _buildField('Phone Number', Iconsax.call, _phoneCtrl),
+                AppGaps.mediumV,
+                _buildField('Email Address', Iconsax.sms, _emailCtrl),
+                AppGaps.mediumV,
+                _buildField(
+                  'Store Description',
+                  Iconsax.document_text,
+                  _descriptionCtrl,
+                  maxLines: 3,
+                ),
+                AppGaps.extraLargeV,
+                SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: ElevatedButton(
+                    onPressed: _save,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.black,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                    child: Text(
+                      isEditing ? 'UPDATE SHOP PROFILE' : 'SAVE SHOP PROFILE',
+                      style: const TextStyle(
+                        color: AppColors.white,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 1,
+                      ),
+                    ),
+                  ),
+                ),
+                AppGaps.extraLargeV,
+              ],
+            ),
           ),
         ),
       ),

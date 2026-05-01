@@ -23,60 +23,67 @@ class MyDoctorScreen extends ConsumerWidget {
         .toSet()
         .toList();
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      drawer: const SideNavBar(currentRoute: '/doctors'),
-      appBar: CustomAppBar(
-        title: 'My Doctors',
-        subtitle: 'Manage your professional contacts',
-        showDrawerButton: true,
-        showBackButton: false,
-        actions: [
-          IconButton(
-            onPressed: () => context.push(AppRouter.addEditDoctor),
-            icon: const Icon(Iconsax.user_add, color: AppColors.black),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppGaps.screenPadding),
-        child: Column(
-          children: [
-            DoctorSearchFilterCard(
-              onSearch: doctorNotifier.setSearchQuery,
-              onFilter: doctorNotifier.setSpecializationFilter,
-              specializations: specializations,
-              selectedSpecialization: doctorState.specializationFilter,
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+        context.go(AppRouter.home);
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        drawer: const SideNavBar(currentRoute: '/doctors'),
+        appBar: CustomAppBar(
+          title: 'My Doctors',
+          subtitle: 'Manage your professional contacts',
+          showDrawerButton: true,
+          showBackButton: false,
+          actions: [
+            IconButton(
+              onPressed: () => context.push(AppRouter.addEditDoctor),
+              icon: const Icon(Iconsax.user_add, color: AppColors.black),
             ),
-            AppGaps.largeV,
-            if (doctorState.filteredDoctors.isEmpty)
-              const Center(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 40),
-                  child: Text('No doctors found matching your criteria.'),
-                ),
-              )
-            else
-              ListView.separated(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: doctorState.filteredDoctors.length,
-                separatorBuilder: (context, index) => AppGaps.mediumV,
-                itemBuilder: (context, index) {
-                  final doctor = doctorState.filteredDoctors[index];
-                  return DoctorCard(
-                    doctor: doctor,
-                    onTap: () => context.push(
-                      AppRouter.doctorDetail.replaceFirst(
-                        ':doctorId',
-                        doctor.id,
-                      ),
-                    ),
-                  );
-                },
-              ),
-            AppGaps.extraLargeV,
           ],
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppGaps.screenPadding),
+          child: Column(
+            children: [
+              DoctorSearchFilterCard(
+                onSearch: doctorNotifier.setSearchQuery,
+                onFilter: doctorNotifier.setSpecializationFilter,
+                specializations: specializations,
+                selectedSpecialization: doctorState.specializationFilter,
+              ),
+              AppGaps.largeV,
+              if (doctorState.filteredDoctors.isEmpty)
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 40),
+                    child: Text('No doctors found matching your criteria.'),
+                  ),
+                )
+              else
+                ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: doctorState.filteredDoctors.length,
+                  separatorBuilder: (context, index) => AppGaps.mediumV,
+                  itemBuilder: (context, index) {
+                    final doctor = doctorState.filteredDoctors[index];
+                    return DoctorCard(
+                      doctor: doctor,
+                      onTap: () => context.push(
+                        AppRouter.doctorDetail.replaceFirst(
+                          ':doctorId',
+                          doctor.id,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              AppGaps.extraLargeV,
+            ],
+          ),
         ),
       ),
     );

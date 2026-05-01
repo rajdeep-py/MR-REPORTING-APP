@@ -27,40 +27,47 @@ class ChemistShopDetailScreen extends ConsumerWidget {
       );
     }
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: CustomAppBar(
-        title: shop.name,
-        subtitle: 'Shop Details',
-        showBackButton: true,
-        showDrawerButton: false,
-        actions: [
-          IconButton(
-            onPressed: () =>
-                context.push(AppRouter.addEditChemist, extra: shop),
-            icon: const Icon(Iconsax.edit, color: AppColors.black),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppGaps.screenPadding),
-        child: Column(
-          children: [
-            ChemistShopHeaderCard(
-              name: shop.name,
-              address: shop.address,
-              photoUrl: shop.photoUrl,
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+        context.go(AppRouter.chemist);
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        appBar: CustomAppBar(
+          title: shop.name,
+          subtitle: 'Shop Details',
+          showBackButton: true,
+          showDrawerButton: false,
+          actions: [
+            IconButton(
+              onPressed: () =>
+                  context.push(AppRouter.addEditChemist, extra: shop),
+              icon: const Icon(Iconsax.edit, color: AppColors.black),
             ),
-            AppGaps.largeV,
-            ChemistShopDescriptionCard(description: shop.description),
-            AppGaps.largeV,
-            ChemistShopContactCard(
-              phone: shop.phone,
-              email: shop.email,
-              address: shop.address,
-            ),
-            AppGaps.extraLargeV,
           ],
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppGaps.screenPadding),
+          child: Column(
+            children: [
+              ChemistShopHeaderCard(
+                name: shop.name,
+                address: shop.address,
+                photoUrl: shop.photoUrl,
+              ),
+              AppGaps.largeV,
+              ChemistShopDescriptionCard(description: shop.description),
+              AppGaps.largeV,
+              ChemistShopContactCard(
+                phone: shop.phone,
+                email: shop.email,
+                address: shop.address,
+              ),
+              AppGaps.extraLargeV,
+            ],
+          ),
         ),
       ),
     );

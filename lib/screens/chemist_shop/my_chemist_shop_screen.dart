@@ -18,52 +18,62 @@ class MyChemistShopScreen extends ConsumerWidget {
     final shopState = ref.watch(chemistShopNotifierProvider);
     final shopNotifier = ref.read(chemistShopNotifierProvider.notifier);
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      drawer: const SideNavBar(currentRoute: '/chemist'),
-      appBar: CustomAppBar(
-        title: 'My Chemist Shops',
-        subtitle: 'Manage pharmacy partners',
-        showDrawerButton: true,
-        showBackButton: false,
-        actions: [
-          IconButton(
-            onPressed: () => context.push(AppRouter.addEditChemist),
-            icon: const Icon(Iconsax.add_circle, color: AppColors.black),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppGaps.screenPadding),
-        child: Column(
-          children: [
-            ChemistShopSearchCard(onSearch: shopNotifier.setSearchQuery),
-            AppGaps.smallV,
-            if (shopState.filteredShops.isEmpty)
-              const Center(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 40),
-                  child: Text('No chemist shops found.'),
-                ),
-              )
-            else
-              ListView.separated(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: shopState.filteredShops.length,
-                separatorBuilder: (context, index) => AppGaps.mediumV,
-                itemBuilder: (context, index) {
-                  final shop = shopState.filteredShops[index];
-                  return ChemistShopCard(
-                    shop: shop,
-                    onTap: () => context.push(
-                      AppRouter.chemistDetail.replaceFirst(':shopId', shop.id),
-                    ),
-                  );
-                },
-              ),
-            AppGaps.extraLargeV,
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+        context.go(AppRouter.home);
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        drawer: const SideNavBar(currentRoute: '/chemist'),
+        appBar: CustomAppBar(
+          title: 'My Chemist Shops',
+          subtitle: 'Manage pharmacy partners',
+          showDrawerButton: true,
+          showBackButton: false,
+          actions: [
+            IconButton(
+              onPressed: () => context.push(AppRouter.addEditChemist),
+              icon: const Icon(Iconsax.add_circle, color: AppColors.black),
+            ),
           ],
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(AppGaps.screenPadding),
+          child: Column(
+            children: [
+              ChemistShopSearchCard(onSearch: shopNotifier.setSearchQuery),
+              AppGaps.smallV,
+              if (shopState.filteredShops.isEmpty)
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 40),
+                    child: Text('No chemist shops found.'),
+                  ),
+                )
+              else
+                ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: shopState.filteredShops.length,
+                  separatorBuilder: (context, index) => AppGaps.mediumV,
+                  itemBuilder: (context, index) {
+                    final shop = shopState.filteredShops[index];
+                    return ChemistShopCard(
+                      shop: shop,
+                      onTap: () => context.push(
+                        AppRouter.chemistDetail.replaceFirst(
+                          ':shopId',
+                          shop.id,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              AppGaps.extraLargeV,
+            ],
+          ),
         ),
       ),
     );
