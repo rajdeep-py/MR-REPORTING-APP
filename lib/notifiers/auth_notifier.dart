@@ -1,4 +1,4 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import '../models/user.dart';
 
 class AuthState {
@@ -22,10 +22,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   Future<void> login(String phone, String password) async {
     state = state.copyWith(isLoading: true, error: null);
-    
+
     // Simulate API call
     await Future.delayed(const Duration(seconds: 2));
-    
+
     if (phone == "9876543210" && password == "password") {
       final user = UserModel(
         id: "1",
@@ -44,7 +44,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
       );
       state = state.copyWith(user: user, isLoading: false);
     } else {
-      state = state.copyWith(isLoading: false, error: "Invalid credentials. Please contact your organization.");
+      state = state.copyWith(
+        isLoading: false,
+        error: "Invalid credentials. Please contact your organization.",
+      );
     }
   }
 
@@ -52,4 +55,3 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = AuthState();
   }
 }
-

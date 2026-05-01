@@ -1,7 +1,9 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/app_bar.dart';
 import '../../models/doctor.dart';
@@ -27,6 +29,7 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
   late TextEditingController _phoneCtrl;
   late TextEditingController _emailCtrl;
   late TextEditingController _addressCtrl;
+  String? _imagePath;
 
   @override
   void initState() {
@@ -41,6 +44,7 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
     _phoneCtrl = TextEditingController(text: d?.phone);
     _emailCtrl = TextEditingController(text: d?.email);
     _addressCtrl = TextEditingController(text: d?.address);
+    _imagePath = d?.photoUrl;
   }
 
   @override
@@ -57,6 +61,71 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
     super.dispose();
   }
 
+  Future<void> _pickImage(ImageSource source) async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: source);
+    if (pickedFile != null) {
+      setState(() {
+        _imagePath = pickedFile.path;
+      });
+    }
+  }
+
+  void _showImagePickerOptions() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Select Photo Source',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+            ),
+            const SizedBox(height: 24),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _pickerOption(Iconsax.camera, 'Camera', () {
+                  Navigator.pop(context);
+                  _pickImage(ImageSource.camera);
+                }),
+                _pickerOption(Iconsax.gallery, 'Gallery', () {
+                  Navigator.pop(context);
+                  _pickImage(ImageSource.gallery);
+                }),
+              ],
+            ),
+            const SizedBox(height: 16),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _pickerOption(IconData icon, String label, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              shape: BoxShape.circle,
+              border: Border.all(color: AppColors.coolGrey.withAlpha(50)),
+            ),
+            child: Icon(icon, color: AppColors.black, size: 28),
+          ),
+          const SizedBox(height: 8),
+          Text(label, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12)),
+        ],
+      ),
+    );
+  }
+
   void _save() {
     if (_formKey.currentState!.validate()) {
       final newDoctor = DoctorModel(
@@ -70,6 +139,7 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
         phone: _phoneCtrl.text,
         email: _emailCtrl.text,
         address: _addressCtrl.text,
+        photoUrl: _imagePath,
         chambers: widget.doctorToEdit?.chambers ?? [],
       );
 
@@ -100,6 +170,49 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
           key: _formKey,
           child: Column(
             children: [
+              // Image Picker Section
+              Center(
+                child: Stack(
+                  children: [
+                    Container(
+                      width: 120,
+                      height: 120,
+                      decoration: BoxDecoration(
+                        color: AppColors.surface,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: AppColors.black.withAlpha(30), width: 2),
+                        image: _imagePath != null
+                            ? DecorationImage(
+                                image: _imagePath!.startsWith('http')
+                                    ? NetworkImage(_imagePath!)
+                                    : FileImage(File(_imagePath!)) as ImageProvider,
+                                fit: BoxFit.cover,
+                              )
+                            : null,
+                      ),
+                      child: _imagePath == null
+                          ? const Icon(Iconsax.user, size: 48, color: AppColors.coolGrey)
+                          : null,
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: InkWell(
+                        onTap: _showImagePickerOptions,
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: const BoxDecoration(
+                            color: AppColors.black,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(Iconsax.camera, color: AppColors.white, size: 18),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 32),
               _buildField('Full Name', Iconsax.user, _nameCtrl),
               AppGaps.mediumV,
               _buildField('Specialization', Iconsax.award, _specializationCtrl),

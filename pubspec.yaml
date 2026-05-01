@@ -38,13 +38,13 @@ dependencies:
   iconsax: ^0.0.8
 
   # Go Router for routing
-  go_router: ^14.2.0
+  go_router: ^17.2.2
 
   # Riverpod for state management
-  flutter_riverpod: ^2.5.1
+  flutter_riverpod: ^3.3.1
 
   # Animation
-  animate_do: ^3.3.4
+  animate_do: ^5.1.0
 
   # Date and Time
   table_calendar: ^3.2.0
@@ -55,6 +55,7 @@ dependencies:
 
   # Chart
   fl_chart: ^1.2.0
+  image_picker: ^1.2.2
 
 dev_dependencies:
   flutter_test:

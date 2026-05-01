@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../theme/app_theme.dart';
@@ -44,7 +45,9 @@ class DoctorCard extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: doctor.photoUrl != null
-                    ? Image.network(doctor.photoUrl!, fit: BoxFit.cover)
+                    ? (doctor.photoUrl!.startsWith('http')
+                        ? Image.network(doctor.photoUrl!, fit: BoxFit.cover)
+                        : Image.file(File(doctor.photoUrl!), fit: BoxFit.cover))
                     : const Icon(Iconsax.user, color: AppColors.coolGrey, size: 32),
               ),
             ),

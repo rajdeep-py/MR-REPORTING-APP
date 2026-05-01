@@ -1,4 +1,4 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 class HomeState {
   final String greeting;
@@ -29,7 +29,7 @@ class HomeNotifier extends StateNotifier<HomeState> {
       "Sometimes later becomes never. Do it now.",
       "Great things never come from comfort zones.",
       "Dream it. Wish it. Do it.",
-      "Success doesn’t just find you. You have to go out and get it."
+      "Success doesn’t just find you. You have to go out and get it.",
     ];
     final quote = quotes[DateTime.now().second % quotes.length];
 

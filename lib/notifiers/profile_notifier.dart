@@ -1,4 +1,4 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import '../models/user.dart';
 
 class ProfileState {
@@ -18,7 +18,8 @@ class ProfileState {
 }
 
 class ProfileNotifier extends StateNotifier<ProfileState> {
-  ProfileNotifier(UserModel? initialUser) : super(ProfileState(user: initialUser));
+  ProfileNotifier(UserModel? initialUser)
+    : super(ProfileState(user: initialUser));
 
   void setUser(UserModel user) {
     state = state.copyWith(user: user);
@@ -26,10 +27,10 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
 
   Future<void> updateProfile(UserModel updatedUser) async {
     state = state.copyWith(isLoading: true, error: null);
-    
+
     // Simulate API call
     await Future.delayed(const Duration(seconds: 2));
-    
+
     state = state.copyWith(user: updatedUser, isLoading: false);
   }
 }
