@@ -5,6 +5,7 @@ import '../screens/auth/login_screen.dart';
 import '../screens/profile/profile_screen.dart';
 import '../screens/attendance/attendance_record_screen.dart';
 import '../screens/home/home_screen.dart';
+import '../screens/notification/notification_screen.dart';
 
 class AppRouter {
   static const String splash = '/';
@@ -101,7 +102,7 @@ class AppRouter {
       ),
       GoRoute(
         path: notifications,
-        builder: (context, state) => _placeholder('Notifications'),
+        builder: (context, state) => const NotificationScreen(),
       ),
       GoRoute(
         path: about,
