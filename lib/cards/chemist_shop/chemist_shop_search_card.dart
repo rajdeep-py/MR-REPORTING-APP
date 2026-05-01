@@ -10,7 +10,7 @@ class ChemistShopSearchCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(2),
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(24),
@@ -20,7 +20,10 @@ class ChemistShopSearchCard extends StatelessWidget {
         onChanged: onSearch,
         decoration: InputDecoration(
           hintText: 'Search chemist shops...',
-          prefixIcon: const Icon(Iconsax.search_normal, color: AppColors.coolGrey),
+          prefixIcon: const Icon(
+            Iconsax.search_normal,
+            color: AppColors.coolGrey,
+          ),
           filled: true,
           fillColor: AppColors.surface,
           border: OutlineInputBorder(

@@ -38,7 +38,7 @@ class MyChemistShopScreen extends ConsumerWidget {
         child: Column(
           children: [
             ChemistShopSearchCard(onSearch: shopNotifier.setSearchQuery),
-            AppGaps.largeV,
+            AppGaps.smallV,
             if (shopState.filteredShops.isEmpty)
               const Center(
                 child: Padding(
