@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../models/doctor.dart';
 import '../models/chemist_shop.dart';
+import '../models/stockist.dart';
 import '../screens/auth/splash_screen.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/profile/profile_screen.dart';
@@ -18,6 +19,9 @@ import '../screens/doctor/add_edit_doctor_screen.dart';
 import '../screens/chemist_shop/my_chemist_shop_screen.dart';
 import '../screens/chemist_shop/chemist_shop_detail_screen.dart';
 import '../screens/chemist_shop/add_edit_chemist_shop_screen.dart';
+import '../screens/stockist/my_stockist_screen.dart';
+import '../screens/stockist/stockist_detail_screen.dart';
+import '../screens/stockist/add_edit_stockist_screen.dart';
 
 class AppRouter {
   static const String splash = '/';
@@ -38,6 +42,8 @@ class AppRouter {
   static const String chemistDetail = '/chemist-detail/:shopId';
   static const String addEditChemist = '/add-edit-chemist';
   static const String stockist = '/stockist';
+  static const String stockistDetail = '/stockist-detail/:stockistId';
+  static const String addEditStockist = '/add-edit-stockist';
   static const String orders = '/orders';
   static const String gifts = '/gifts';
   static const String expenses = '/expenses';
@@ -49,18 +55,9 @@ class AppRouter {
   static final GoRouter router = GoRouter(
     initialLocation: splash,
     routes: [
-      GoRoute(
-        path: splash,
-        builder: (context, state) => const SplashScreen(),
-      ),
-      GoRoute(
-        path: login,
-        builder: (context, state) => const LoginScreen(),
-      ),
-      GoRoute(
-        path: home,
-        builder: (context, state) => const HomeScreen(),
-      ),
+      GoRoute(path: splash, builder: (context, state) => const SplashScreen()),
+      GoRoute(path: login, builder: (context, state) => const LoginScreen()),
+      GoRoute(path: home, builder: (context, state) => const HomeScreen()),
       GoRoute(
         path: attendance,
         builder: (context, state) => const AttendanceRecordScreen(),
@@ -73,10 +70,7 @@ class AppRouter {
         path: visualAds,
         builder: (context, state) => _placeholder('Visual Ads'),
       ),
-      GoRoute(
-        path: team,
-        builder: (context, state) => const MyTeamScreen(),
-      ),
+      GoRoute(path: team, builder: (context, state) => const MyTeamScreen()),
       GoRoute(
         path: teamDetails,
         builder: (context, state) {
@@ -125,16 +119,27 @@ class AppRouter {
         },
       ),
       GoRoute(
-        path: dcr,
-        builder: (context, state) => _placeholder('DCR'),
+        path: stockist,
+        builder: (context, state) => const MyStockistScreen(),
       ),
+      GoRoute(
+        path: stockistDetail,
+        builder: (context, state) {
+          final stockistId = state.pathParameters['stockistId']!;
+          return StockistDetailScreen(stockistId: stockistId);
+        },
+      ),
+      GoRoute(
+        path: addEditStockist,
+        builder: (context, state) {
+          final stockist = state.extra as StockistModel?;
+          return AddEditStockistScreen(stockistToEdit: stockist);
+        },
+      ),
+      GoRoute(path: dcr, builder: (context, state) => _placeholder('DCR')),
       GoRoute(
         path: trips,
         builder: (context, state) => _placeholder('My Trips'),
-      ),
-      GoRoute(
-        path: stockist,
-        builder: (context, state) => _placeholder('My Stockists'),
       ),
       GoRoute(
         path: orders,
@@ -156,10 +161,7 @@ class AppRouter {
         path: notifications,
         builder: (context, state) => const NotificationScreen(),
       ),
-      GoRoute(
-        path: about,
-        builder: (context, state) => const AboutUsScreen(),
-      ),
+      GoRoute(path: about, builder: (context, state) => const AboutUsScreen()),
       GoRoute(
         path: settings,
         builder: (context, state) => _placeholder('Settings'),
@@ -169,6 +171,6 @@ class AppRouter {
 
   static Widget _placeholder(String title) => Scaffold(
     appBar: AppBar(title: Text(title)),
-    body: Center(child: Text(title)),
+    body: Center(child: Text('Coming Soon')),
   );
 }
