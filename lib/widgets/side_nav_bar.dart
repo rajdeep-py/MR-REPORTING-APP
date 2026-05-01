@@ -66,12 +66,6 @@ class SideNavBar extends StatelessWidget {
                     ),
                     _buildMenuItem(
                       context,
-                      'My Trips',
-                      Iconsax.map,
-                      AppRouter.trips,
-                    ),
-                    _buildMenuItem(
-                      context,
                       'Expense Tracker',
                       Iconsax.money,
                       AppRouter.expenses,
@@ -241,7 +235,7 @@ class SideNavBar extends StatelessWidget {
       child: InkWell(
         onTap: () {
           Navigator.pop(context); // Close drawer
-          context.go(route);
+          context.push(route);
         },
         borderRadius: BorderRadius.circular(16),
         child: Container(

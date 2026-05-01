@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import '../models/doctor.dart';
 import '../models/chemist_shop.dart';
 import '../models/stockist.dart';
+import '../models/dcr.dart';
 import '../screens/auth/splash_screen.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/profile/profile_screen.dart';
@@ -22,6 +23,9 @@ import '../screens/chemist_shop/add_edit_chemist_shop_screen.dart';
 import '../screens/stockist/my_stockist_screen.dart';
 import '../screens/stockist/stockist_detail_screen.dart';
 import '../screens/stockist/add_edit_stockist_screen.dart';
+import '../screens/visual_ads/visual_ads_screen.dart';
+import '../screens/dcr/dcr_screen.dart';
+import '../screens/dcr/create_edit_dcr_screen.dart';
 
 class AppRouter {
   static const String splash = '/';
@@ -37,6 +41,7 @@ class AppRouter {
   static const String doctorDetail = '/doctor-detail/:doctorId';
   static const String addEditDoctor = '/add-edit-doctor';
   static const String dcr = '/dcr';
+  static const String createEditDcr = '/create-edit-dcr';
   static const String trips = '/trips';
   static const String chemist = '/chemist';
   static const String chemistDetail = '/chemist-detail/:shopId';
@@ -68,7 +73,7 @@ class AppRouter {
       ),
       GoRoute(
         path: visualAds,
-        builder: (context, state) => _placeholder('Visual Ads'),
+        builder: (context, state) => const VisualAdsScreen(),
       ),
       GoRoute(path: team, builder: (context, state) => const MyTeamScreen()),
       GoRoute(
@@ -98,6 +103,14 @@ class AppRouter {
         builder: (context, state) {
           final doctor = state.extra as DoctorModel?;
           return AddEditDoctorScreen(doctorToEdit: doctor);
+        },
+      ),
+      GoRoute(path: dcr, builder: (context, state) => const DCRScreen()),
+      GoRoute(
+        path: createEditDcr,
+        builder: (context, state) {
+          final dcr = state.extra as DCRModel?;
+          return CreateEditDCRScreen(dcrToEdit: dcr);
         },
       ),
       GoRoute(
@@ -136,7 +149,6 @@ class AppRouter {
           return AddEditStockistScreen(stockistToEdit: stockist);
         },
       ),
-      GoRoute(path: dcr, builder: (context, state) => _placeholder('DCR')),
       GoRoute(
         path: trips,
         builder: (context, state) => _placeholder('My Trips'),

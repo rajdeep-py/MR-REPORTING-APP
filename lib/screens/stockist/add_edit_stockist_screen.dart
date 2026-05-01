@@ -91,11 +91,11 @@ class _AddEditStockistScreenState extends ConsumerState<AddEditStockistScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _pickerOption(Iconsax.camera, 'Camera', () {
-                  Navigator.pop(context);
+                  context.pop();
                   _pickImage(ImageSource.camera);
                 }),
                 _pickerOption(Iconsax.gallery, 'Gallery', () {
-                  Navigator.pop(context);
+                  context.pop();
                   _pickImage(ImageSource.gallery);
                 }),
               ],

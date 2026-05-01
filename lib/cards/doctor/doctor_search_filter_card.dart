@@ -19,11 +19,10 @@ class DoctorSearchFilterCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(2),
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppColors.coolGrey.withAlpha(30)),
       ),
       child: Column(
         children: [
@@ -31,7 +30,10 @@ class DoctorSearchFilterCard extends StatelessWidget {
             onChanged: onSearch,
             decoration: InputDecoration(
               hintText: 'Search by doctor name...',
-              prefixIcon: const Icon(Iconsax.search_normal, color: AppColors.coolGrey),
+              prefixIcon: const Icon(
+                Iconsax.search_normal,
+                color: AppColors.coolGrey,
+              ),
               filled: true,
               fillColor: AppColors.surface,
               border: OutlineInputBorder(
@@ -68,7 +70,9 @@ class DoctorSearchFilterCard extends StatelessWidget {
             color: isSelected ? AppColors.black : AppColors.surface,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: isSelected ? AppColors.black : AppColors.coolGrey.withAlpha(50),
+              color: isSelected
+                  ? AppColors.black
+                  : AppColors.coolGrey.withAlpha(50),
             ),
           ),
           child: Text(

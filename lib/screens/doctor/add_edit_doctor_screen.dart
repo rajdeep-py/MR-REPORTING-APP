@@ -92,11 +92,11 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _pickerOption(Iconsax.camera, 'Camera', () {
-                  Navigator.pop(context);
+                  context.pop();
                   _pickImage(ImageSource.camera);
                 }),
                 _pickerOption(Iconsax.gallery, 'Gallery', () {
-                  Navigator.pop(context);
+                  context.pop();
                   _pickImage(ImageSource.gallery);
                 }),
               ],
@@ -182,7 +182,7 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
                     children: [
                       Expanded(
                         child: TextButton(
-                          onPressed: () => Navigator.pop(context),
+                          onPressed: () => context.pop(),
                           style: TextButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -207,7 +207,7 @@ class _AddEditDoctorScreenState extends ConsumerState<AddEditDoctorScreen> {
                                   _chambers[index] = newChamber;
                                 }
                               });
-                              Navigator.pop(context);
+                              context.pop();
                             }
                           },
                           style: ElevatedButton.styleFrom(
