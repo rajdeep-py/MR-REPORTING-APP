@@ -66,6 +66,18 @@ class SideNavBar extends StatelessWidget {
                     ),
                     _buildMenuItem(
                       context,
+                      'Chemist Shop Reporting',
+                      Iconsax.document_text,
+                      AppRouter.chemistReporting,
+                    ),
+                    _buildMenuItem(
+                      context,
+                      'Stockist Reporting',
+                      Iconsax.document_text,
+                      AppRouter.dcr,
+                    ),
+                    _buildMenuItem(
+                      context,
                       'Expense Tracker',
                       Iconsax.money,
                       AppRouter.expenses,

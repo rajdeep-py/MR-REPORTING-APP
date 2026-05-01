@@ -4,6 +4,7 @@ import '../models/doctor.dart';
 import '../models/chemist_shop.dart';
 import '../models/stockist.dart';
 import '../models/dcr.dart';
+import '../models/chemist_shop_reporting.dart';
 import '../screens/auth/splash_screen.dart';
 import '../screens/auth/login_screen.dart';
 import '../screens/profile/profile_screen.dart';
@@ -26,6 +27,8 @@ import '../screens/stockist/add_edit_stockist_screen.dart';
 import '../screens/visual_ads/visual_ads_screen.dart';
 import '../screens/dcr/dcr_screen.dart';
 import '../screens/dcr/create_edit_dcr_screen.dart';
+import '../screens/chemist_shop_reporting/chemist_shop_reporting_screen.dart';
+import '../screens/chemist_shop_reporting/create_edit_chemist_shop_reporting_screen.dart';
 
 class AppRouter {
   static const String splash = '/';
@@ -49,6 +52,8 @@ class AppRouter {
   static const String stockist = '/stockist';
   static const String stockistDetail = '/stockist-detail/:stockistId';
   static const String addEditStockist = '/add-edit-stockist';
+  static const String chemistReporting = '/chemist-reporting';
+  static const String createEditChemistReporting = '/create-edit-chemist-reporting';
   static const String orders = '/orders';
   static const String gifts = '/gifts';
   static const String expenses = '/expenses';
@@ -147,6 +152,17 @@ class AppRouter {
         builder: (context, state) {
           final stockist = state.extra as StockistModel?;
           return AddEditStockistScreen(stockistToEdit: stockist);
+        },
+      ),
+      GoRoute(
+        path: chemistReporting,
+        builder: (context, state) => const ChemistShopReportingScreen(),
+      ),
+      GoRoute(
+        path: createEditChemistReporting,
+        builder: (context, state) {
+          final report = state.extra as ChemistShopReportingModel?;
+          return CreateEditChemistShopReportingScreen(reportToEdit: report);
         },
       ),
       GoRoute(
