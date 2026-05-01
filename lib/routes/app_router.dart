@@ -9,6 +9,7 @@ import '../screens/notification/notification_screen.dart';
 import '../screens/about_us/about_us_screen.dart';
 import '../screens/routine/routine_screen.dart';
 import '../screens/team/my_team_screen.dart';
+import '../screens/team/team_details_screen.dart';
 
 class AppRouter {
   static const String splash = '/';
@@ -18,6 +19,7 @@ class AppRouter {
   static const String target = '/target';
   static const String visualAds = '/visual-ads';
   static const String team = '/team';
+  static const String teamDetails = '/team-details/:teamId';
   static const String routine = '/routine';
   static const String doctors = '/doctors';
   static const String dcr = '/dcr';
@@ -62,6 +64,13 @@ class AppRouter {
       GoRoute(
         path: team,
         builder: (context, state) => const MyTeamScreen(),
+      ),
+      GoRoute(
+        path: teamDetails,
+        builder: (context, state) {
+          final teamId = state.pathParameters['teamId']!;
+          return TeamDetailsScreen(teamId: teamId);
+        },
       ),
       GoRoute(
         path: routine,
