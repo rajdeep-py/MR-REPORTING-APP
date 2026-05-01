@@ -62,7 +62,7 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
 
   void markAsRead(String id) {
     final newList = state.notifications.map((n) {
-      if (n.id == id)
+      if (n.id == id) {
         return NotificationModel(
           id: n.id,
           title: n.title,
@@ -70,6 +70,7 @@ class NotificationNotifier extends StateNotifier<NotificationState> {
           time: n.time,
           isRead: true,
         );
+      }
       return n;
     }).toList();
     state = state.copyWith(notifications: newList);

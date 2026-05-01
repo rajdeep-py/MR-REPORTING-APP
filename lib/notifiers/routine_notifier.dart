@@ -33,8 +33,9 @@ class RoutineNotifier extends StateNotifier<RoutineState> {
     final newList = state.routines.map((routine) {
       if (isSameDay(routine.date, date)) {
         final newTasks = routine.tasks.map((task) {
-          if (task.id == taskId)
+          if (task.id == taskId) {
             return task.copyWith(isCompleted: !task.isCompleted);
+          }
           return task;
         }).toList();
         return RoutineModel(date: routine.date, tasks: newTasks);
