@@ -21,7 +21,7 @@ class DCRFilterCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(2),
       decoration: BoxDecoration(
         color: AppColors.white,
         borderRadius: BorderRadius.circular(24),
@@ -46,7 +46,10 @@ class DCRFilterCard extends StatelessWidget {
                     onStatusChanged(null);
                     onDateChanged(null);
                   },
-                  child: const Text('Clear All', style: TextStyle(color: Colors.red, fontSize: 12)),
+                  child: const Text(
+                    'Clear All',
+                    style: TextStyle(color: Colors.red, fontSize: 12),
+                  ),
                 ),
             ],
           ),
@@ -61,14 +64,17 @@ class DCRFilterCard extends StatelessWidget {
                   child: ChoiceChip(
                     label: Text(status.name.toUpperCase()),
                     selected: isSelected,
-                    onSelected: (val) => onStatusChanged(val ? status.name : null),
+                    onSelected: (val) =>
+                        onStatusChanged(val ? status.name : null),
                     selectedColor: AppColors.black,
                     labelStyle: TextStyle(
                       color: isSelected ? AppColors.white : AppColors.black,
                       fontWeight: FontWeight.w700,
                       fontSize: 10,
                     ),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                 );
               }).toList(),
@@ -93,13 +99,20 @@ class DCRFilterCard extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  const Icon(Iconsax.calendar_1, size: 18, color: AppColors.black),
+                  const Icon(
+                    Iconsax.calendar_1,
+                    size: 18,
+                    color: AppColors.black,
+                  ),
                   const SizedBox(width: 12),
                   Text(
-                    selectedDate == null 
-                        ? 'Filter by Date' 
+                    selectedDate == null
+                        ? 'Filter by Date'
                         : DateFormat('dd MMM, yyyy').format(selectedDate!),
-                    style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 13,
+                    ),
                   ),
                   const Spacer(),
                   if (selectedDate != null)
