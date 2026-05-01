@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/app_bar.dart';
 import '../../widgets/side_nav_bar.dart';
+import '../../widgets/footer.dart';
 import '../../providers/home_provider.dart';
 import '../../providers/attendance_provider.dart';
 import '../../providers/auth_provider.dart';
@@ -31,27 +32,36 @@ class HomeScreen extends ConsumerWidget {
         showBackButton: false,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppGaps.screenPadding),
         child: Column(
           children: [
-            GreetingCard(
-              greeting: homeState.greeting,
-              userName: authState.user?.name ?? 'User',
-              quote: homeState.quote,
+            Padding(
+              padding: const EdgeInsets.all(AppGaps.screenPadding),
+              child: Column(
+                children: [
+                  GreetingCard(
+                    greeting: homeState.greeting,
+                    userName: authState.user?.name ?? 'User',
+                    quote: homeState.quote,
+                  ),
+                  AppGaps.largeV,
+                  AttendanceCard(
+                    todayAttendance: attendanceNotifier.todayAttendance,
+                    onCheckIn: () => attendanceNotifier.checkIn(),
+                    onCheckOut: () => attendanceNotifier.checkOut(),
+                    onBreakIn: () => attendanceNotifier.breakIn(),
+                    onBreakOut: () => attendanceNotifier.breakOut(),
+                  ),
+                  AppGaps.largeV,
+                  const QuickActionCard(),
+                  AppGaps.largeV,
+                  const AttendanceGraphCard(),
+                ],
+              ),
             ),
-            AppGaps.largeV,
-            AttendanceCard(
-              todayAttendance: attendanceNotifier.todayAttendance,
-              onCheckIn: () => attendanceNotifier.checkIn(),
-              onCheckOut: () => attendanceNotifier.checkOut(),
-              onBreakIn: () => attendanceNotifier.breakIn(),
-              onBreakOut: () => attendanceNotifier.breakOut(),
+            const CustomFooter(
+              headerText: "Naiyo24",
+              tagline: "Where Innovation meets Business!",
             ),
-            AppGaps.largeV,
-            const QuickActionCard(),
-            AppGaps.largeV,
-            const AttendanceGraphCard(),
-            AppGaps.extraLargeV,
           ],
         ),
       ),
